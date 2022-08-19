@@ -8,7 +8,7 @@ import {
 import { ThemeProvider } from 'styled-components';
 import { Router } from './Router';
 import GlobalStyle from './styles/GlobalStyle';
-import { theme } from './styles/theme';
+import theme from './styles/theme';
 
 function App() {
   // * react query 글로벌 에러 핸들링 세팅
