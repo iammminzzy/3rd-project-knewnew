@@ -15,10 +15,16 @@ const colors = {
   yellow: '#f5df4d',
 };
 
+const fonts = {
+  fontFamily: "'Noto Sans KR', sans-serif",
+};
+
 export type ColorsTypes = typeof colors;
+export type FontsTypes = typeof fonts;
 
 const theme: DefaultTheme = {
   colors,
+  fonts,
 };
 
 export default theme;
