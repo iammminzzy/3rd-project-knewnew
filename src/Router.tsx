@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
+import Footer from './components/Footer/Footer';
+
 import Home from './pages/Home/Home';
 import NewFeed from './pages/NewFeed/NewFeed';
 import Search from './pages/Search/Search';
@@ -19,6 +21,7 @@ export function Router() {
         <Route path="/Detail/:id" element={<Detail />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }
