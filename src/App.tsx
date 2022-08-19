@@ -27,9 +27,9 @@ function App() {
 
   return (
     <>
-      <GlobalStyle />
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
+          <GlobalStyle />
           <Router />
         </ThemeProvider>
       </QueryClientProvider>

@@ -62,6 +62,9 @@ const ItemListWrap = styled.div`
   position: relative;
   margin: 120px auto;
 
+  font-family: ${({ theme }) => theme.fonts.fontFamily};
+  white-space: pre-wrap;
+
   @media (min-width: 768px) {
     width: 748px;
   }
@@ -85,11 +88,10 @@ const Footer = styled.div`
   border-top: 1px solid #ddd;
   border-left: 1px solid #ddd;
   border-right: 1px solid #ddd;
-  border-top-left-radius: 50px;
-  border-top-right-radius: 50px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
 
   display: flex;
-  justify-content: space-around;
 
   color: #aaa;
   z-index: 10;
@@ -106,11 +108,8 @@ const Footer = styled.div`
     left: 10px;
     right: 10px;
 
-    padding-top: 10px;
-    padding-bottom: 10px;
-
-    border-top-left-radius: 30px;
-    border-top-right-radius: 30px;
+    padding: 10px 0;
+    font-size: 14px;
 
     svg {
       font-size: 20px;
@@ -120,6 +119,7 @@ const Footer = styled.div`
 
 const IconWrap = styled.div`
   display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: center;
 `;

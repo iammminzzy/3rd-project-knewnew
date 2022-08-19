@@ -35,7 +35,6 @@ function Item({ item }: { item: GetFeedQueryType }) {
         ) : (
           <Bad>Ⅹ 별로예요</Bad>
         )}
-
         <ProductLink>제품 링크 〉</ProductLink>
         <MainTextWrap>
           <MainText>{item.content}</MainText>
@@ -85,8 +84,15 @@ const ItemWrap = styled.li`
   padding: 25px;
   border: 1px solid #ddd;
   border-radius: 20px;
-
   background-color: #fff;
+
+  @media (max-width: 767px) {
+    padding: 20px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 15px;
+  }
 `;
 
 const UserWrap = styled.div`
@@ -103,29 +109,62 @@ const ProfileImg = styled.img`
   width: 50px;
   height: 50px;
   border-radius: 100%;
+
+  @media (max-width: 767px) {
+    width: 35px;
+    height: 35px;
+  }
+
+  @media (max-width: 480px) {
+    width: 25px;
+    height: 25px;
+  }
 `;
 
 const Nickname = styled.span`
   font-size: 20px;
   font-weight: 700;
   margin-left: 10px;
+
+  @media (max-width: 767px) {
+    font-size: 16px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 13px;
+  }
 `;
 
 const ProfileTag = styled.span`
   font-size: 20px;
   color: #aaa;
   margin-left: 10px;
+
+  @media (max-width: 767px) {
+    font-size: 16px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 13px;
+  }
 `;
 
 const MoreWrap = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 17px;
   color: #aaa;
 
   svg {
     font-size: 30px;
+  }
+
+  @media (max-width: 767px) {
+    font-size: 16px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 13px;
   }
 `;
 
@@ -134,32 +173,38 @@ const Article = styled.div`
   margin: 10px 10px 10px 60px;
 
   font-size: 20px;
-  line-height: 140%;
-
-  font-size: 20px;
-  font-weight: 700;
+  color: #555;
 
   @media (max-width: 767px) {
-    font-size: 14px;
+    font-size: 16px;
+    margin: 10px 10px 10px 40px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 13px;
+    margin: 10px 10px 10px 20px;
   }
 `;
 
 const Best = styled.p`
   color: #ff4b4b;
+  font-weight: 700;
 `;
 
 const Soso = styled.p`
   color: #ffc646;
+  font-weight: 700;
 `;
 
 const Bad = styled.p`
   color: #000000;
+  font-weight: 700;
 `;
 
 const ProductLink = styled.span`
   display: inline-block;
   margin-top: 15px;
-  padding: 0 10px;
+  padding: 2px 5px;
   font-weight: 500;
   background-color: #eee;
 `;
@@ -176,12 +221,16 @@ const MainText = styled.p`
   line-height: 30px;
   text-overflow: ellipsis;
   overflow: hidden;
-  font-weight: 100;
+  font-weight: 300;
 
   @media (max-width: 767px) {
-    font-size: 16px;
     max-height: 120px;
     line-height: 24px;
+  }
+
+  @media (max-width: 480px) {
+    max-height: 100px;
+    line-height: 20px;
   }
 `;
 
@@ -225,6 +274,12 @@ const ImgWrap = styled.div<{ isMorePicture: number }>`
             top: 50%;
             transform: translateY(-50%);
           }
+
+          @media (max-width: 480px) {
+            svg {
+              font-size: 40px;
+            }
+          }
         }
       }`;
     }
@@ -263,15 +318,12 @@ const IconWrap = styled.div`
 
   @media (max-width: 767px) {
     font-size: 16px;
-    margin: 20px 30px 20px 0;
 
     div {
-      position: relative;
       margin: 0;
 
       span {
-        position: relative;
-        top: -4px;
+        top: -5px;
       }
 
       svg {
@@ -281,8 +333,8 @@ const IconWrap = styled.div`
   }
 
   @media (max-width: 480px) {
-    font-size: 14px;
-    margin: 20px 0;
+    font-size: 13px;
+    margin: 20px 0 0 0;
     svg {
       font-size: 16px;
     }
