@@ -15,3 +15,14 @@ export const getFeed = async () => {
     return Feed.data;
   }
 };
+
+export const getDetail = async () => {
+  const Detail = await axios.get('/data/detail.json', {
+    headers: {
+      // token
+    },
+  });
+  if (Detail) {
+    return Detail.data;
+  }
+};
