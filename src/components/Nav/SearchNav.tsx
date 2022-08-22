@@ -9,32 +9,43 @@ import { AiOutlineSearch } from 'react-icons/ai';
 
 const SearchNav = () => {
   const navigate = useNavigate();
-  const [value, setValue] = useState('');
-  const [history, setHistory] = useState<string[]>([]);
+  const [searchValue, setSearchValue] = useState<string>('');
+  const [keywords, setKeywords] = useState<string[]>([]);
+  // const [history, setHistory] = useState<string[]>([]);
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(event.target.value);
+    setSearchValue(event.target.value);
   };
 
-  const submit = (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setHistory(prev => [...prev, value]);
+    if (!keywords.includes(searchValue)) {
+      setKeywords(prev => [...prev, searchValue]);
+    }
+    navigate('/users');
   };
 
   useEffect(() => {
-    window.localStorage.setItem('keyword', JSON.stringify(history));
-  }, [history]);
+    if (typeof window !== 'undefined') {
+      const result = localStorage.getItem('keywords') || '[]';
+      setKeywords(JSON.parse(result));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('keywords', JSON.stringify(keywords));
+  }, [keywords]);
 
   return (
     <Container>
       <Content>
         <Arrow onClick={() => navigate(-1)} />
-        <SearchForm onSubmit={submit}>
+        <SearchForm onSubmit={onSubmit}>
           <SearchBar
             type="text"
             placeholder="검색어를 입력하세요"
             onChange={onChange}
-            value={value}
+            value={searchValue}
           ></SearchBar>
           <SubmitButton type="submit">
             <AiOutlineSearch />
