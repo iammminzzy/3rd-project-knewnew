@@ -6,14 +6,10 @@ import { IoIosArrowBack } from 'react-icons/io';
 const NewFeedNav = () => {
   const navigate = useNavigate();
 
-  const move = () => {
-    navigate(-1);
-  };
-
   return (
     <Container>
       <Content>
-        <Arrow onClick={move} />
+        <Arrow onClick={() => navigate(-1)} />
         <Title>글쓰기</Title>
       </Content>
     </Container>

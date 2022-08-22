@@ -7,14 +7,10 @@ import { AiOutlineSetting } from 'react-icons/ai';
 const UserNav = () => {
   const navigate = useNavigate();
 
-  const move = () => {
-    navigate(-1);
-  };
-
   return (
     <Container>
       <Content>
-        <Arrow onClick={move} />
+        <Arrow onClick={() => navigate(-1)} />
         <Title>마이뉴뉴</Title>
         <Setting />
       </Content>
