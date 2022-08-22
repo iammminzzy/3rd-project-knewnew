@@ -56,32 +56,39 @@ const NAV_DATA = [
 ];
 
 const Container = styled.div`
-  z-index: 1;
-
   position: fixed;
-  max-width: 480px;
-
   bottom: 0;
-
-  width: 100%;
   height: 10%;
 
-  background-color: ${({ theme }) => theme.colors.white80};
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-
-  border: 1px solid ${({ theme }) => theme.colors.white50};
-  border-top-left-radius: 25px;
-  border-top-right-radius: 25px;
+  width: 100%;
 `;
 
 const Box = styled.div`
   display: flex;
-
   height: 100%;
+
+  margin: 0 auto;
+  max-width: 768px;
+
+  background-color: ${({ theme }) => theme.colors.white60};
+  box-shadow: 0 5px 32px 0 rgba(0, 0, 0, 0.5);
+
+  border: 1px solid ${({ theme }) => theme.colors.white50};
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+
+  white-space: pre-wrap;
+
+  @media (min-width: 768px) {
+  }
+  @media (max-width: 767px) {
+  }
+
+  z-index: 1;
 `;
 
 const NavLinkStyled = styled(NavLink)`
-  color: rgba(0, 0, 0, 0.5);
+  color: rgba(0, 0, 0, 0.3);
   &:link {
     transition: 0.3s;
   }
