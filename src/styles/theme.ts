@@ -3,6 +3,7 @@ import { DefaultTheme } from 'styled-components';
 const colors = {
   white: '#FFFFFF',
   white80: '#F7F7FC',
+  white60: '#fff',
   white50: '#ededed',
 
   black: '#000000',

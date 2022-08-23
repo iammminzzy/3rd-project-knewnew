@@ -1,7 +1,9 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-import Home from './pages/Home/Home';
+import Footer from './components/Footer/Footer';
+
+// import Home from './pages/Home/Home';
 import NewFeed from './pages/NewFeed/NewFeed';
 import Search from './pages/Search/Search';
 import Users from './pages/Users/Users';
@@ -13,7 +15,7 @@ export function Router() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Navigate to="/feedlist" />} />
         <Route path="/feedlist" element={<ItemList />} />
         <Route path="/newfeed" element={<NewFeed />} />
         <Route path="/search" element={<Search />} />
@@ -21,6 +23,7 @@ export function Router() {
         <Route path="/Detail/:id" element={<Detail />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }
