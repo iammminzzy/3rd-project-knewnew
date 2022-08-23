@@ -79,11 +79,6 @@ const Box = styled.div`
 
   white-space: pre-wrap;
 
-  @media (min-width: 768px) {
-  }
-  @media (max-width: 767px) {
-  }
-
   z-index: 1;
 `;
 
@@ -116,9 +111,16 @@ const NavLi = styled.li`
 
   gap: 5px;
 
-  font-size: 21px;
+  font-size: 35px;
 
   p {
     font-size: 13px;
+  }
+
+  @media all and (min-width: 480px) and (max-width: 767px) {
+    font-size: 30px;
+  }
+  @media all and (max-width: 479px) {
+    font-size: 22px;
   }
 `;
