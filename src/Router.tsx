@@ -1,9 +1,9 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import Footer from './components/Footer/Footer';
 
-import Home from './pages/Home/Home';
+// import Home from './pages/Home/Home';
 import NewFeed from './pages/NewFeed/NewFeed';
 import Search from './pages/Search/Search';
 import Users from './pages/Users/Users';
@@ -15,7 +15,7 @@ export function Router() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Navigate to="/feedlist" />} />
         <Route path="/feedlist" element={<ItemList />} />
         <Route path="/newfeed" element={<NewFeed />} />
         <Route path="/search" element={<Search />} />

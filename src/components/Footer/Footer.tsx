@@ -33,7 +33,7 @@ const NAV_DATA = [
     id: 1,
     icon: <FaHome />,
     description: '홈',
-    link: '/',
+    link: '/feedlist',
   },
   {
     id: 2,
@@ -116,9 +116,9 @@ const NavLi = styled.li`
 
   gap: 5px;
 
-  font-size: 22px;
+  font-size: 21px;
 
   p {
-    font-size: 14px;
+    font-size: 13px;
   }
 `;
