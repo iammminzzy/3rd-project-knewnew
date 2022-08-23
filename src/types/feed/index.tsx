@@ -11,6 +11,7 @@ export interface GetFeedQueryType {
 }
 
 export interface GetDetailQueryType extends GetFeedQueryType {
-  hashtag: [string];
-  purchasingSite: string;
+  hashtags: [string];
+  timeBefore: number;
+  store?: string;
 }

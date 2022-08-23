@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 import { useQuery } from 'react-query';
 import { getDetail } from '../../api';
 import { GetDetailQueryType } from '../../types/feed';
-import Slider from 'react-slick';
 import { FiMoreHorizontal, FiThumbsUp, FiBookmark } from 'react-icons/fi';
+import { BiStore } from 'react-icons/bi';
 import { IoIosArrowBack } from 'react-icons/io';
 import { BsArrow90DegRight } from 'react-icons/bs';
-import { HiOutlineShare } from 'react-icons/hi';
+import { HiOutlineShare, HiTag } from 'react-icons/hi';
 
 interface DetailProps {
   id: number;
@@ -33,11 +36,13 @@ function Detail({ id }: DetailProps) {
   const settings = {
     arrows: false,
     dots: true,
-    infinite: false,
+    infinite: true,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
   };
+
+  console.log(detail?.hashtags[0]);
 
   return (
     <DetailWrap>
@@ -58,32 +63,44 @@ function Detail({ id }: DetailProps) {
           </UserProfileWrap>
           <MoreWrap>
             <FiMoreHorizontal />
+            <CreatedTime>{detail?.timeBefore}시간 전</CreatedTime>
           </MoreWrap>
         </UserWrap>
         <Article>
-          {detail?.score === 1 ? (
-            <Best>♥ 최고예요</Best>
-          ) : detail?.score === 2 ? (
-            <Soso>● 괜찮아요</Soso>
-          ) : (
-            <Bad>Ⅹ 별로예요</Bad>
-          )}
-          <ProductLink>제품 링크 〉</ProductLink>
+          <ArticleHeader>
+            {detail?.score === 1 ? (
+              <Best>♥ 최고예요</Best>
+            ) : detail?.score === 2 ? (
+              <Soso>● 괜찮아요</Soso>
+            ) : (
+              <Bad>X 별로예요</Bad>
+            )}
+            <Store>
+              <BiStore />
+              {detail?.store}
+            </Store>
+          </ArticleHeader>
+          <ProductLink>제품 링크 ﹥</ProductLink>
           <MainTextWrap>
             <MainText>{detail?.content}</MainText>
           </MainTextWrap>
-          <SliderWrap>
-            <Slider {...settings}>
-              {detail?.img.map(image => {
-                console.log(image);
-                return (
-                  <ImgWrap key={image.id}>
-                    <ContentImg src={image.url} />
-                  </ImgWrap>
-                );
-              })}
-            </Slider>
+          <SliderWrap {...settings}>
+            {detail?.img.map(image => {
+              return (
+                <ImgWrap key={image.id}>
+                  <ContentImg src={image.url} />
+                </ImgWrap>
+              );
+            })}
           </SliderWrap>
+          <HashTagWrap>
+            <HiTag />
+            <HashTags>
+              {detail?.hashtags.map((hashtag, idx) => {
+                return <div key={idx}>{hashtag}</div>;
+              })}
+            </HashTags>
+          </HashTagWrap>
           <IconWrap>
             <div>
               <BsArrow90DegRight />
@@ -103,7 +120,19 @@ function Detail({ id }: DetailProps) {
             </div>
           </IconWrap>
         </Article>
+        <HorizontalLine />
+        <CommentWrap>
+          <CommentTotal>작성된 댓글 0개</CommentTotal>
+          <CommentList></CommentList>
+        </CommentWrap>
       </ContentsWrap>
+      <CommentInputWrap>
+        <CommentInput
+          type="text"
+          placeholder="댓글을 남겨보세요."
+        ></CommentInput>
+        <CommentBtn disabled>작성</CommentBtn>
+      </CommentInputWrap>
     </DetailWrap>
   );
 }
@@ -129,10 +158,12 @@ const Header = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 60px;
+  width: 100%;
+  height: 90px;
   padding: 20px 0;
   background-color: #fff;
   border-bottom: 1px solid #ddd;
+  font-size: 20px;
   z-index: 10;
 
   svg {
@@ -147,7 +178,7 @@ const Header = styled.div`
     left: 10px;
     right: 10px;
     padding: 10px 0;
-    font-size: 14px;
+    font-size: 16px;
 
     svg {
       font-size: 20px;
@@ -161,8 +192,8 @@ const ToBack = styled.div`
 `;
 
 const ContentsWrap = styled.div`
-  margin-top: 60px;
-  padding: 20px;
+  margin-top: 90px;
+  padding: 25px 25px 0;
 `;
 
 const UserWrap = styled.div`
@@ -194,13 +225,13 @@ const ProfileImg = styled.img`
 const ProfileInfo = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 9px;
+  margin-left: 20px;
 `;
 
 const Nickname = styled.span`
   font-size: 20px;
   font-weight: 600;
-  margin-left: 10px;
 
   @media (max-width: 767px) {
     font-size: 16px;
@@ -214,7 +245,6 @@ const Nickname = styled.span`
 const ProfileTag = styled.span`
   font-size: 15px;
   color: #aaa;
-  margin-left: 10px;
 
   @media (max-width: 767px) {
     font-size: 12px;
@@ -227,6 +257,7 @@ const ProfileTag = styled.span`
 
 const MoreWrap = styled.div`
   display: flex;
+  gap: 8px;
   flex-direction: column;
   align-items: center;
   color: #aaa;
@@ -239,29 +270,43 @@ const MoreWrap = styled.div`
     width: 40px;
     height: 40px;
   }
+`;
+
+const CreatedTime = styled.div`
+  font-size: 15px;
+  color: #aaa;
+
+  @media (max-width: 767px) {
+    font-size: 12px;
+  }
 
   @media (max-width: 480px) {
-    width: 30px;
-    height: 30px;
+    font-size: 10px;
   }
 `;
 
 const Article = styled.div`
   position: relative;
-  margin: 10px 10px 10px 60px;
-
-  font-size: 20px;
+  margin: 30px 0px 10px 0px;
+  /* display: flex;
+  flex-direction: column; */
+  /* gap: 10px; */
   color: #555;
+  font-size: 20px;
 
   @media (max-width: 767px) {
     font-size: 16px;
-    margin: 10px 10px 10px 40px;
   }
 
   @media (max-width: 480px) {
     font-size: 13px;
-    margin: 10px 10px 10px 20px;
   }
+`;
+
+const ArticleHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
 `;
 
 const Best = styled.p`
@@ -279,10 +324,29 @@ const Bad = styled.p`
   font-weight: 700;
 `;
 
+const Store = styled.div`
+  display: flex;
+  align-items: center;
+  color: #aaa;
+
+  svg {
+    margin-right: 5px;
+    font-size: 20px;
+  }
+
+  @media (max-width: 767px) {
+    font-size: 12px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 10px;
+  }
+`;
+
 const ProductLink = styled.span`
   display: inline-block;
-  margin-top: 15px;
   padding: 2px 5px;
+  margin-top: 10px;
   font-weight: 500;
   background-color: #eee;
 `;
@@ -290,7 +354,7 @@ const ProductLink = styled.span`
 const MainTextWrap = styled.div``;
 
 const MainText = styled.p`
-  margin: 10px 0;
+  margin: 20px 0;
   display: -webkit-box;
   max-height: 150px;
   -webkit-line-clamp: 5;
@@ -312,24 +376,60 @@ const MainText = styled.p`
   }
 `;
 
-const SliderWrap = styled.div`
-  /* display: flex; */
+const SliderWrap = styled(Slider)`
+  margin-bottom: 16px;
+
+  .slick-slide div {
+    outline: none;
+  }
+
+  .slick-dots {
+    bottom: 13px;
+  }
 `;
 
 const ImgWrap = styled.div`
-  width: 100%;
-  height: 638px;
-  margin: 2px;
+  aspect-ratio: 1/1;
 `;
 
 const ContentImg = styled.img`
   width: 100%;
-  border-radius: 15px;
+  border-radius: 25px;
   object-fit: cover;
 `;
 
+const HashTagWrap = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #aaa;
+  font-size: 20px;
+
+  @media (max-width: 767px) {
+    font-size: 16px;
+    gap: 5px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 13px;
+    gap: 3px;
+  }
+`;
+
+const HashTags = styled(HashTagWrap)`
+  font-size: 17px;
+
+  @media (max-width: 767px) {
+    font-size: 15px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 13px;
+  }
+`;
+
 const IconWrap = styled.div`
-  margin: 20px 30px 20px 0;
+  margin: 30px;
 
   display: flex;
   justify-content: space-between;
@@ -375,5 +475,96 @@ const IconWrap = styled.div`
     svg {
       font-size: 16px;
     }
+  }
+`;
+
+const HorizontalLine = styled.hr`
+  border: 0.5px solid #ddd;
+`;
+
+const CommentWrap = styled.div`
+  margin-bottom: 130px;
+`;
+
+const CommentTotal = styled.div`
+  margin: 35px 0;
+  color: #787777;
+  font-weight: 600;
+  font-size: 18px;
+
+  @media (max-width: 767px) {
+    margin: 30px 0;
+    font-size: 15px;
+  }
+
+  @media (max-width: 480px) {
+    margin: 25px 0;
+    font-size: 13px;
+  }
+`;
+
+const CommentList = styled.div``;
+
+const CommentInputWrap = styled.div`
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 90px;
+  padding: 20px;
+  background-color: #fff;
+  border-top: 1px solid #ddd;
+
+  @media (min-width: 768px) {
+    width: 748px;
+  }
+`;
+
+const CommentInput = styled.input`
+  color: #555;
+  font-size: 20px;
+
+  @media (max-width: 767px) {
+    font-size: 19px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 17px;
+  }
+
+  &::placeholder {
+    color: #cccaca;
+    font-size: 20px;
+    font-weight: 200;
+
+    @media (max-width: 767px) {
+      font-size: 19px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 17px;
+    }
+  }
+`;
+
+const CommentBtn = styled.button`
+  min-width: 35px;
+  background: none;
+  border: none;
+  color: #ff4b4b;
+  font-size: 20px;
+
+  @media (max-width: 767px) {
+    font-size: 19px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 17px;
+  }
+
+  &:disabled {
+    color: #bbb;
   }
 `;
