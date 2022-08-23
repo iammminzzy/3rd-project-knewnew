@@ -71,9 +71,9 @@ const Box = styled.div`
   max-width: 768px;
 
   background-color: ${({ theme }) => theme.colors.white60};
-  box-shadow: 0 5px 32px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 5px 32px 0 rgba(0, 0, 0, 0.3);
 
-  border: 1px solid ${({ theme }) => theme.colors.white50};
+  border: 1px solid ${({ theme }) => theme.colors.white60};
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
 
