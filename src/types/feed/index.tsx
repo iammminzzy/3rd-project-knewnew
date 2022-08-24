@@ -8,3 +8,9 @@ export interface GetFeedQueryType {
   modified: boolean;
   score: number;
 }
+
+export interface GetDetailQueryType extends GetFeedQueryType {
+  hashtags: [string];
+  timeBefore: number;
+  store?: string;
+}

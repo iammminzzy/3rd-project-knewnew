@@ -66,7 +66,7 @@ function ItemList() {
           {isFetchingNextPage ? <span>loading...</span> : <div ref={ref}></div>}
         </List>
       </ListWrap>
-      <Footer>
+      {/* <Footer>
         <IconWrap>
           <FaHome />
           <IconTitle>홈</IconTitle>
@@ -83,7 +83,7 @@ function ItemList() {
           <FaUserAlt />
           <IconTitle>마이뉴뉴</IconTitle>
         </IconWrap>
-      </Footer>
+      </Footer> */}
     </ItemListWrap>
   );
 }
