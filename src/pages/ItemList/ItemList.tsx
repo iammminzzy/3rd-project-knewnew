@@ -1,37 +1,69 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Item from './Component/Item';
 import styled from 'styled-components';
-import { useQuery } from 'react-query';
+import { useInfiniteQuery, useQuery } from 'react-query';
+import { useInView } from 'react-intersection-observer';
 import { getFeed } from '../../api';
 import { GetFeedQueryType } from '../../types/feed';
 
 import { FaHome, FaUserAlt } from 'react-icons/fa';
 import { HiPencil } from 'react-icons/hi';
 import { BiSearchAlt2 } from 'react-icons/bi';
+import Post from '../../Post';
+
+const fetchPostList = async (pageParam: number) => {
+  const res = await axios.get(
+    `https://jsonplaceholder.typicode.com/posts?_page=${pageParam}`
+  );
+  const posts = res.data;
+  return { posts, nextPage: pageParam + 1 };
+};
 
 function ItemList() {
-  const [feed, setFeed] = useState<GetFeedQueryType>();
-  const getFeedQuery = useQuery<GetFeedQueryType, Error>(
-    'getFeed',
-    () => getFeed(),
-    {
-      onSuccess: data => {
-        setFeed(data);
-      },
-    }
-  );
+  // const [feed, setFeed] = useState<ListType>([]);
+  // const getFeedQuery = useQuery<ListType, Error>('getFeed', () => getFeed(), {
+  //   onSuccess: data => {
+  //     setFeed(data);
+  //   },
+  // });
 
-  if (getFeedQuery.isLoading) {
-    return <span>loading...</span>;
-  }
+  // if (getFeedQuery.isLoading) {
+  //   return <span>loading...</span>;
+  // }
+
+  const { ref, inView } = useInView();
+  const { data, status, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery('posts', ({ pageParam = 1 }) => fetchPostList(pageParam), {
+      getNextPageParam: lastPage => {
+        return lastPage.posts.length ? lastPage.nextPage : undefined;
+      },
+    });
+
+  useEffect(() => {
+    if (inView && hasNextPage) fetchNextPage();
+  }, [inView, hasNextPage]);
+
+  if (status === 'loading') return <p>Loading..</p>;
+  if (status === 'error') return <p>error..</p>;
+
+  const content = data?.pages.map(pg => {
+    return pg.posts.map(
+      (item: { body: string; id: number; title: string; userId: number }) => {
+        return <Item key={item.id} item={item} />;
+      }
+    );
+  });
 
   return (
     <ItemListWrap>
       <ListWrap>
         <List>
-          {feed?.map((item: GetFeedQueryType) => {
+          {content}
+          {/* {feed.map((item: GetFeedQueryType) => {
             return <Item key={item.id} item={item} />;
-          })}
+          })} */}
+          {isFetchingNextPage ? <span>loading...</span> : <div ref={ref}></div>}
         </List>
       </ListWrap>
       <Footer>

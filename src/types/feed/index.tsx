@@ -7,5 +7,4 @@ export interface GetFeedQueryType {
   content: string;
   modified: boolean;
   score: number;
-  map: any;
 }

@@ -8,6 +8,7 @@ import Users from './pages/Users/Users';
 import Detail from './pages/Detail/Detail';
 import NotFound from './pages/NotFound/NotFound';
 import ItemList from './pages/ItemList/ItemList';
+import Example2 from './Example2';
 
 export function Router() {
   return (
@@ -20,6 +21,7 @@ export function Router() {
         <Route path="/users" element={<Users />} />
         <Route path="/Detail/:id" element={<Detail />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/example2" element={<Example2 />} />
       </Routes>
     </BrowserRouter>
   );
