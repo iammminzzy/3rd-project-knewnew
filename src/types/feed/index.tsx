@@ -9,3 +9,9 @@ export interface GetFeedQueryType {
   score: number;
   map: any;
 }
+
+export interface GetDetailQueryType extends GetFeedQueryType {
+  hashtags: [string];
+  timeBefore: number;
+  store?: string;
+}
