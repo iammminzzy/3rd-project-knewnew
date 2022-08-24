@@ -2,15 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Item from './Component/Item';
 import styled from 'styled-components';
-import { useInfiniteQuery, useQuery } from 'react-query';
+import { useInfiniteQuery } from 'react-query';
 import { useInView } from 'react-intersection-observer';
 import { getFeed } from '../../api';
 import { GetFeedQueryType } from '../../types/feed';
-
-import { FaHome, FaUserAlt } from 'react-icons/fa';
-import { HiPencil } from 'react-icons/hi';
-import { BiSearchAlt2 } from 'react-icons/bi';
-import Post from '../../Post';
 
 const fetchPostList = async (pageParam: number) => {
   const res = await axios.get(
@@ -33,6 +28,7 @@ function ItemList() {
   // }
 
   const { ref, inView } = useInView();
+
   const { data, status, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery('posts', ({ pageParam = 1 }) => fetchPostList(pageParam), {
       getNextPageParam: lastPage => {
@@ -63,27 +59,9 @@ function ItemList() {
           {/* {feed.map((item: GetFeedQueryType) => {
             return <Item key={item.id} item={item} />;
           })} */}
-          {isFetchingNextPage ? <span>loading...</span> : <div ref={ref}></div>}
+          {isFetchingNextPage ? <span>loading...</span> : <Ref ref={ref}></Ref>}
         </List>
       </ListWrap>
-      {/* <Footer>
-        <IconWrap>
-          <FaHome />
-          <IconTitle>홈</IconTitle>
-        </IconWrap>
-        <IconWrap>
-          <HiPencil />
-          <IconTitle>글쓰기</IconTitle>
-        </IconWrap>
-        <IconWrap>
-          <BiSearchAlt2 />
-          <IconTitle>검색</IconTitle>
-        </IconWrap>
-        <IconWrap>
-          <FaUserAlt />
-          <IconTitle>마이뉴뉴</IconTitle>
-        </IconWrap>
-      </Footer> */}
     </ItemListWrap>
   );
 }
@@ -110,52 +88,7 @@ const ListWrap = styled.div``;
 
 const List = styled.ul``;
 
-const Footer = styled.div`
-  position: fixed;
-  bottom: 0;
-  padding-top: 20px;
-  padding-bottom: 30px;
-  background-color: #fff;
-
-  border-top: 1px solid #ddd;
-  border-left: 1px solid #ddd;
-  border-right: 1px solid #ddd;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-
-  display: flex;
-
-  color: #aaa;
-  z-index: 10;
-
-  svg {
-    font-size: 30px;
-  }
-
-  @media (min-width: 768px) {
-    width: 748px;
-  }
-
-  @media (max-width: 767px) {
-    left: 10px;
-    right: 10px;
-
-    padding: 10px 0;
-    font-size: 14px;
-
-    svg {
-      font-size: 20px;
-    }
-  }
-`;
-
-const IconWrap = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const IconTitle = styled.span`
-  margin-top: 5px;
+const Ref = styled.div`
+  position: absolute;
+  bottom: 200px;
 `;
