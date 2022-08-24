@@ -12,7 +12,7 @@ import theme from './styles/theme';
 import Modal from '../src/components/Modal/Modal';
 
 function App() {
-  const [modalOpen, setModalOpen] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
   const closeModal = (): void => {
     setModalOpen(false);
   };

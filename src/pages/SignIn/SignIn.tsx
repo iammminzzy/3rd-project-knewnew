@@ -1,7 +1,30 @@
 import React from 'react';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
+interface SnsSignInButton {
+  onClick: () => void;
+}
+
 export default function SignIn() {
+  const navigate = useNavigate();
+  const kakaoAuthLink = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_REDIRECT_URI}&response_type=code`;
+
+  const toSnsLogin = (sns: string) => {
+    switch (sns) {
+      case 'kakao':
+        window.location.href = kakaoAuthLink;
+        break;
+
+      case 'naver':
+        navigate('/naverLogin');
+        break;
+
+      default:
+        alert('준비중입니다');
+    }
+  };
+
   return (
     <Container>
       <Content>
@@ -19,7 +42,12 @@ export default function SignIn() {
         <Section>또는</Section>
         <ButtonWapper>
           {SNS_SIGNIN_DATA.map(item => (
-            <SnsSignInButton key={item.name} alt="icon" src={item.image} />
+            <SnsSignInButton
+              key={item.name}
+              alt="icon"
+              src={item.image}
+              onClick={() => toSnsLogin(item.name)}
+            />
           ))}
         </ButtonWapper>
       </Content>
@@ -115,7 +143,7 @@ const ButtonWapper = styled.div`
   gap: 20px;
 `;
 
-const SnsSignInButton = styled.img`
+const SnsSignInButton = styled.img<SnsSignInButton>`
   width: 50px;
 `;
 

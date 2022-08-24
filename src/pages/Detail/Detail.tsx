@@ -12,11 +12,7 @@ import { IoIosArrowBack } from 'react-icons/io';
 import { BsArrow90DegRight } from 'react-icons/bs';
 import { HiOutlineShare, HiTag } from 'react-icons/hi';
 
-interface DetailProps {
-  id: number;
-}
-
-function Detail({ id }: DetailProps) {
+function Detail() {
   const [detail, setDetail] = useState<GetDetailQueryType>();
   const getDetailQuery = useQuery<GetDetailQueryType, Error>(
     'getDetail',
@@ -28,7 +24,6 @@ function Detail({ id }: DetailProps) {
     }
   );
 
-  console.log(detail);
   if (getDetailQuery.isLoading) {
     return <span>loading...</span>;
   }
@@ -379,7 +374,12 @@ const MainText = styled.p`
 const SliderWrap = styled(Slider)`
   margin-bottom: 16px;
 
-  .slick-slide div {
+  .slick-track {
+    display: flex;
+    gap: 10px;
+  }
+
+  .slick-slide {
     outline: none;
   }
 
