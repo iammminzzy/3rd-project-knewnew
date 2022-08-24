@@ -10,6 +10,7 @@ import Users from './pages/Users/Users';
 import Detail from './pages/Detail/Detail';
 import NotFound from './pages/NotFound/NotFound';
 import ItemList from './pages/ItemList/ItemList';
+import SignIn from './pages/SignIn/SignIn';
 
 export function Router() {
   return (
@@ -20,8 +21,9 @@ export function Router() {
         <Route path="/newfeed" element={<NewFeed />} />
         <Route path="/search" element={<Search />} />
         <Route path="/users" element={<Users />} />
-        <Route path="/detail/:id" element={<Detail id={2} />} />
-        <Route path="/no" element={<NotFound />} />
+        <Route path="/Detail/:id" element={<Detail />} />
+        <Route path="*" element={<NotFound />} />
+        <Route path="/signin" element={<SignIn />} />
       </Routes>
       <Footer />
     </BrowserRouter>
