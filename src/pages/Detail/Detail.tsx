@@ -37,8 +37,6 @@ function Detail() {
     slidesToScroll: 1,
   };
 
-  console.log(detail?.hashtags[0]);
-
   return (
     <DetailWrap>
       <Header>

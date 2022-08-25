@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { GetFeedQueryType } from '../../../types/feed';
 
@@ -11,8 +12,10 @@ import {
 import { BiComment } from 'react-icons/bi';
 
 function Item({ item }: { item: GetFeedQueryType }) {
+  const navigate = useNavigate();
+
   return (
-    <ItemWrap>
+    <ItemWrap onClick={() => navigate(`/detail/${item.id}`)}>
       <UserWrap>
         <UserProfileWrap>
           <ProfileImg
