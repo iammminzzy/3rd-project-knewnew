@@ -16,13 +16,13 @@ export default function Users() {
     setCurrentTab(index);
   };
 
-  useEffect(() => {
-    const isLogged = localStorage.getItem('isLogged');
-    if (!isLogged) {
-      navigate('/signin');
-      return;
-    }
-  }, []);
+  // useEffect(() => {
+  //   const isLogged = localStorage.getItem('isLogged');
+  //   if (!isLogged) {
+  //     navigate('/signin');
+  //     return;
+  //   }
+  // }, []);
   return (
     <Container>
       <Back>
@@ -45,7 +45,11 @@ export default function Users() {
               </Profile>
             </UserInfo>
             <Form>
-              <Input type="text" placeholder="자기소개를 입력해주세요." />
+              <Input
+                type="text"
+                placeholder="자기소개를 입력해주세요."
+                disabled
+              />
               <PenIcon />
             </Form>
           </Wapper>
@@ -92,7 +96,7 @@ const Content = styled.div`
   position: relative;
 
   max-width: 768px;
-  height: 33%;
+  height: 28%;
   width: 100%;
 
   background-color: ${({ theme }) => theme.colors.white};
@@ -101,11 +105,9 @@ const Content = styled.div`
 
 const Wapper = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
 
-  gap: 20px;
+  gap: 15px;
   margin: 0px 20px;
 
   width: 100%;
@@ -130,12 +132,12 @@ const NickName = styled.div`
   flex-direction: column;
   gap: 8px;
 
-  font-size: 30px;
+  font-size: 25px;
   font-weight: 800;
 `;
 
 const Individuality = styled.p`
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
 
   color: ${({ theme }) => theme.colors.black50};
@@ -194,6 +196,7 @@ const Menu = styled.li`
   border-bottom: 2px solid inherit;
 
   color: ${({ theme }) => theme.colors.black50};
+  font-size: 14px;
   font-weight: 400;
 
   cursor: pointer;
