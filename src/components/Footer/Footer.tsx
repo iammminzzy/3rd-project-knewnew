@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 
 import { FaHome } from 'react-icons/fa';
 import { RiPencilFill } from 'react-icons/ri';
@@ -8,6 +8,13 @@ import { BsSearch } from 'react-icons/bs';
 import { FaUser } from 'react-icons/fa';
 
 const Footer = () => {
+  const location = useLocation();
+  if (
+    location.pathname.includes('detail') ||
+    location.pathname.includes('signin')
+  ) {
+    return null;
+  }
   return (
     <Container>
       <Box>

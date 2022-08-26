@@ -21,7 +21,7 @@ export function Router() {
         <Route path="/newfeed" element={<NewFeed />} />
         <Route path="/search" element={<Search />} />
         <Route path="/users" element={<Users />} />
-        <Route path="/Detail/:id" element={<Detail />} />
+        <Route path="/detail/:id" element={<Detail />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/signin" element={<SignIn />} />
       </Routes>

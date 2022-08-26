@@ -1,23 +1,21 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useQuery } from 'react-query';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useQuery } from 'react-query';
 import { getDetail } from '../../api';
 import { GetDetailQueryType } from '../../types/feed';
+
 import { FiMoreHorizontal, FiThumbsUp, FiBookmark } from 'react-icons/fi';
 import { BiStore } from 'react-icons/bi';
 import { IoIosArrowBack } from 'react-icons/io';
 import { BsArrow90DegRight } from 'react-icons/bs';
 import { HiOutlineShare, HiTag } from 'react-icons/hi';
 
-interface DetailProps {
-  id: number;
-}
-
-function Detail({ id }: DetailProps) {
+function Detail() {
   const [detail, setDetail] = useState<GetDetailQueryType>();
+  const [comment, setComment] = useState([]);
   const getDetailQuery = useQuery<GetDetailQueryType, Error>(
     'getDetail',
     () => getDetail(),
@@ -28,7 +26,6 @@ function Detail({ id }: DetailProps) {
     }
   );
 
-  console.log(detail);
   if (getDetailQuery.isLoading) {
     return <span>loading...</span>;
   }
@@ -41,8 +38,6 @@ function Detail({ id }: DetailProps) {
     slidesToShow: 1,
     slidesToScroll: 1,
   };
-
-  console.log(detail?.hashtags[0]);
 
   return (
     <DetailWrap>
@@ -102,30 +97,19 @@ function Detail({ id }: DetailProps) {
             </HashTags>
           </HashTagWrap>
           <IconWrap>
-            <div>
-              <BsArrow90DegRight />
-              <span>300</span>
-            </div>
-            <div>
-              <FiThumbsUp />
-              <span>500</span>
-            </div>
-            <div>
-              <FiBookmark />
-              <span>100</span>
-            </div>
-            <div>
-              <HiOutlineShare />
-              <span>50</span>
-            </div>
+            {SCORE_ICON.map(item => (
+              <div key={item.name}>{item.images}</div>
+            ))}
           </IconWrap>
         </Article>
-        <HorizontalLine />
-        <CommentWrap>
-          <CommentTotal>작성된 댓글 0개</CommentTotal>
-          <CommentList></CommentList>
-        </CommentWrap>
       </ContentsWrap>
+      <HorizontalLine />
+      <CommentWrap>
+        <CommentTotal>작성된 댓글 0개</CommentTotal>
+        <CommentList>
+          <div>23123</div>
+        </CommentList>
+      </CommentWrap>
       <CommentInputWrap>
         <CommentInput
           type="text"
@@ -138,6 +122,29 @@ function Detail({ id }: DetailProps) {
 }
 
 export default Detail;
+
+const SCORE_ICON = [
+  {
+    id: 1,
+    name: 'quotation',
+    images: <BsArrow90DegRight />,
+  },
+  {
+    id: 2,
+    name: 'like',
+    images: <FiThumbsUp />,
+  },
+  {
+    id: 3,
+    name: 'bookmark',
+    images: <FiBookmark />,
+  },
+  {
+    id: 4,
+    name: 'share',
+    images: <HiOutlineShare />,
+  },
+];
 
 const DetailWrap = styled.div`
   position: relative;
@@ -158,26 +165,23 @@ const Header = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
   width: 100%;
-  height: 90px;
-  padding: 20px 0;
-  background-color: #fff;
-  border-bottom: 1px solid #ddd;
+  height: 8%;
+
+  background-color: ${({ theme }) => theme.colors.white};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.white50};
   font-size: 20px;
-  z-index: 10;
+  z-index: 1;
 
   svg {
     font-size: 30px;
   }
 
   @media (min-width: 768px) {
-    width: 748px;
   }
 
   @media (max-width: 767px) {
-    left: 10px;
-    right: 10px;
-    padding: 10px 0;
     font-size: 16px;
 
     svg {
@@ -193,7 +197,7 @@ const ToBack = styled.div`
 
 const ContentsWrap = styled.div`
   margin-top: 90px;
-  padding: 25px 25px 0;
+  padding: 0px 15px;
 `;
 
 const UserWrap = styled.div`
@@ -244,7 +248,7 @@ const Nickname = styled.span`
 
 const ProfileTag = styled.span`
   font-size: 15px;
-  color: #aaa;
+  color: ${({ theme }) => theme.colors.black50};
 
   @media (max-width: 767px) {
     font-size: 12px;
@@ -260,7 +264,7 @@ const MoreWrap = styled.div`
   gap: 8px;
   flex-direction: column;
   align-items: center;
-  color: #aaa;
+  color: ${({ theme }) => theme.colors.black50};
 
   svg {
     font-size: 30px;
@@ -274,7 +278,7 @@ const MoreWrap = styled.div`
 
 const CreatedTime = styled.div`
   font-size: 15px;
-  color: #aaa;
+  color: ${({ theme }) => theme.colors.black50};
 
   @media (max-width: 767px) {
     font-size: 12px;
@@ -287,11 +291,11 @@ const CreatedTime = styled.div`
 
 const Article = styled.div`
   position: relative;
-  margin: 30px 0px 10px 0px;
+  margin: 30px 0px 5px 0px;
   /* display: flex;
   flex-direction: column; */
   /* gap: 10px; */
-  color: #555;
+  color: ${({ theme }) => theme.colors.black80};
   font-size: 20px;
 
   @media (max-width: 767px) {
@@ -310,7 +314,7 @@ const ArticleHeader = styled.div`
 `;
 
 const Best = styled.p`
-  color: #ff4b4b;
+  color: ${({ theme }) => theme.colors.red80};
   font-weight: 700;
 `;
 
@@ -320,14 +324,14 @@ const Soso = styled.p`
 `;
 
 const Bad = styled.p`
-  color: #000000;
+  color: ${({ theme }) => theme.colors.black};
   font-weight: 700;
 `;
 
 const Store = styled.div`
   display: flex;
   align-items: center;
-  color: #aaa;
+  color: ${({ theme }) => theme.colors.black50};
 
   svg {
     margin-right: 5px;
@@ -347,8 +351,10 @@ const ProductLink = styled.span`
   display: inline-block;
   padding: 2px 5px;
   margin-top: 10px;
+  border-radius: 5px;
   font-weight: 500;
-  background-color: #eee;
+  background-color: ${({ theme }) => theme.colors.white50};
+  opacity: 0.7;
 `;
 
 const MainTextWrap = styled.div``;
@@ -378,11 +384,13 @@ const MainText = styled.p`
 
 const SliderWrap = styled(Slider)`
   margin-bottom: 16px;
-
-  .slick-slide div {
+  .slick-track {
+    display: flex;
+    gap: 10px;
+  }
+  .slick-slide {
     outline: none;
   }
-
   .slick-dots {
     bottom: 13px;
   }
@@ -432,7 +440,7 @@ const IconWrap = styled.div`
   margin: 30px;
 
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 
   font-size: 20px;
   font-weight: 500;
@@ -479,31 +487,32 @@ const IconWrap = styled.div`
 `;
 
 const HorizontalLine = styled.hr`
-  border: 0.5px solid #ddd;
+  width: 100%;
+  border: 1px solid ${({ theme }) => theme.colors.white50};
 `;
 
 const CommentWrap = styled.div`
-  margin-bottom: 130px;
+  margin-bottom: 80px;
 `;
 
 const CommentTotal = styled.div`
-  margin: 35px 0;
-  color: #787777;
-  font-weight: 600;
+  margin: 10px 0px 10px 15px;
+  color: ${({ theme }) => theme.colors.black50};
+  font-weight: 400;
   font-size: 18px;
 
   @media (max-width: 767px) {
-    margin: 30px 0;
     font-size: 15px;
   }
 
   @media (max-width: 480px) {
-    margin: 25px 0;
     font-size: 13px;
   }
 `;
 
-const CommentList = styled.div``;
+const CommentList = styled.div`
+  margin: 10px 0px 10px 15px;
+`;
 
 const CommentInputWrap = styled.div`
   position: fixed;
@@ -512,8 +521,8 @@ const CommentInputWrap = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 90px;
-  padding: 20px;
+
+  padding: 10px;
   background-color: #fff;
   border-top: 1px solid #ddd;
 
@@ -523,15 +532,16 @@ const CommentInputWrap = styled.div`
 `;
 
 const CommentInput = styled.input`
-  color: #555;
-  font-size: 20px;
+  color: ${({ theme }) => theme.colors.black80};
+  font-size: 17px;
+  font-weight: 300;
 
   @media (max-width: 767px) {
-    font-size: 19px;
+    font-size: 16px;
   }
 
   @media (max-width: 480px) {
-    font-size: 17px;
+    font-size: 14px;
   }
 
   &::placeholder {
@@ -540,11 +550,11 @@ const CommentInput = styled.input`
     font-weight: 200;
 
     @media (max-width: 767px) {
-      font-size: 19px;
+      font-size: 16px;
     }
 
     @media (max-width: 480px) {
-      font-size: 17px;
+      font-size: 14px;
     }
   }
 `;
@@ -553,15 +563,16 @@ const CommentBtn = styled.button`
   min-width: 35px;
   background: none;
   border: none;
-  color: #ff4b4b;
+  color: ${({ theme }) => theme.colors.red80};
   font-size: 20px;
+  font-weight: 500;
 
   @media (max-width: 767px) {
-    font-size: 19px;
+    font-size: 16px;
   }
 
   @media (max-width: 480px) {
-    font-size: 17px;
+    font-size: 14px;
   }
 
   &:disabled {
