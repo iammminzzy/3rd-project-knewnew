@@ -25,48 +25,50 @@ export default function Users() {
   }, []);
   return (
     <Container>
-      <Content>
-        <Wapper>
-          <UserInfo>
-            <Description>
-              <NickName>
-                TEST#8096
-                <Individuality>간단함파 1인가구 학생</Individuality>
-              </NickName>
-            </Description>
-            <Profile>
-              <ProfileImg
-                src={
-                  'https://images.unsplash.com/photo-1660678473509-120139e9317b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=872&q=80'
-                }
-                alt="profileimg"
-              />
-            </Profile>
-          </UserInfo>
-          <Form>
-            <Input type="text" placeholder="자기소개를 입력해주세요." />
-            <PenIcon />
-          </Form>
-        </Wapper>
-        <Tab>
-          {menuArr.map((item, index) => (
-            <Menu
-              className={currentTab === index ? 'submenu focused' : 'submenu'}
-              key={item.name}
-              onClick={() => selectMenuHandler(index)}
-            >
-              {item.name}
-            </Menu>
-          ))}
-        </Tab>
-      </Content>
-      <PostList>
-        <h1>{menuArr[currentTab].content}</h1>
-        {menuArr[currentTab].content.length >= 0 && (
-          <NotPost>{menuArr[currentTab].name}이 없습니다.</NotPost>
-        )}
-        <CreateButton type="button">작성하기</CreateButton>
-      </PostList>
+      <Back>
+        <Content>
+          <Wapper>
+            <UserInfo>
+              <Description>
+                <NickName>
+                  TEST#8096
+                  <Individuality>간단함파 1인가구 학생</Individuality>
+                </NickName>
+              </Description>
+              <Profile>
+                <ProfileImg
+                  src={
+                    'https://images.unsplash.com/photo-1660678473509-120139e9317b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=872&q=80'
+                  }
+                  alt="profileimg"
+                />
+              </Profile>
+            </UserInfo>
+            <Form>
+              <Input type="text" placeholder="자기소개를 입력해주세요." />
+              <PenIcon />
+            </Form>
+          </Wapper>
+          <Tab>
+            {menuArr.map((item, index) => (
+              <Menu
+                className={currentTab === index ? 'submenu focused' : 'submenu'}
+                key={item.name}
+                onClick={() => selectMenuHandler(index)}
+              >
+                {item.name}
+              </Menu>
+            ))}
+          </Tab>
+        </Content>
+        <PostList>
+          <h1>{menuArr[currentTab].content}</h1>
+          {menuArr[currentTab].content.length >= 0 && (
+            <NotPost>{menuArr[currentTab].name}이 없습니다.</NotPost>
+          )}
+          <CreateButton type="button">작성하기</CreateButton>
+        </PostList>
+      </Back>
     </Container>
   );
 }
@@ -75,12 +77,13 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
+`;
 
-  position: relative;
-
+const Back = styled.div`
+  max-width: 768px;
   width: 100%;
   height: 100vh;
-
+  position: relative;
   background-color: ${({ theme }) => theme.colors.white80}; ;
 `;
 
@@ -88,6 +91,7 @@ const Content = styled.div`
   display: flex;
   position: relative;
 
+  max-width: 768px;
   height: 33%;
   width: 100%;
 
@@ -220,6 +224,7 @@ const CreateButton = styled.button`
   bottom: 20%;
 
   width: 80%;
+  max-width: 500px;
   padding: 13px;
   border: 1px solid ${({ theme }) => theme.colors.red80};
   border-radius: 5px;
