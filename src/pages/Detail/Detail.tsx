@@ -12,11 +12,7 @@ import { IoIosArrowBack } from 'react-icons/io';
 import { BsArrow90DegRight } from 'react-icons/bs';
 import { HiOutlineShare, HiTag } from 'react-icons/hi';
 
-interface DetailProps {
-  id: number;
-}
-
-function Detail({ id }: DetailProps) {
+function Detail() {
   const [detail, setDetail] = useState<GetDetailQueryType>();
   const getDetailQuery = useQuery<GetDetailQueryType, Error>(
     'getDetail',
