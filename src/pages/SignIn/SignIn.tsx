@@ -1,11 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
-import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
-
-interface SnsSignInButton {
-  onClick: () => void;
-}
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -63,6 +58,14 @@ const SNS_SIGNIN_DATA = [
   { id: 4, name: 'apple', image: 'images/icon/apple_icon.jpeg' },
 ];
 
+// const Status = styled.div`
+//   height: 100vh;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   font-size: 70px;
+// `;
+
 const Container = styled.div`
   display: flex;
   justify-content: center;
@@ -111,14 +114,14 @@ const Input = styled.input`
   min-width: 260px;
 
   padding: 13px;
-  border: 1px solid #ededed;
+  border: 1px solid ${({ theme }) => theme.colors.white50};
   border-radius: 5px;
 
   font-size: 15px;
   opacity: 0.9;
 
   &:focus {
-    outline: 1px solid #fe5d5d;
+    border: 1px solid ${({ theme }) => theme.colors.red};
   }
 `;
 
@@ -126,14 +129,14 @@ const SignInButton = styled.button`
   min-width: 260px;
 
   padding: 13px;
-  border: 1px solid #ededed;
+  border: 1px solid ${({ theme }) => theme.colors.white50};
   border-radius: 5px;
 
   font-size: 16px;
   font-weight: 600;
 
-  background-color: #fe5d5d;
-  color: white;
+  background-color: ${({ theme }) => theme.colors.red};
+  color: ${({ theme }) => theme.colors.white};
   cursor: pointer;
 
   opacity: 0.9;
@@ -144,8 +147,9 @@ const ButtonWapper = styled.div`
   gap: 20px;
 `;
 
-const SnsSignInButton = styled.img<SnsSignInButton>`
+const SnsSignInButton = styled.img`
   width: 50px;
+  cursor: pointer;
 `;
 
 const Section = styled.p`

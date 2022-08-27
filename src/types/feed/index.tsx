@@ -11,7 +11,7 @@ export interface GetFeedQueryType {
 }
 
 export interface GetDetailQueryType extends GetFeedQueryType {
-  hashtags: [string];
+  hashtags: string[];
   timeBefore: number;
   store?: string;
 }
