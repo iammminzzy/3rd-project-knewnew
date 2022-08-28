@@ -4,21 +4,36 @@ import { useNavigate } from 'react-router-dom';
 import { IoIosArrowBack } from 'react-icons/io';
 import { AiOutlineSetting } from 'react-icons/ai';
 
-const UserNav = () => {
+interface Iprops {
+  userLocation: string;
+}
+
+const EtcNav = ({ userLocation }: Iprops) => {
   const navigate = useNavigate();
+  const title = () => {
+    if (userLocation.includes('/newfeed')) {
+      return '글쓰기';
+    }
+    if (userLocation.includes('/detail')) {
+      return '게시글 상세';
+    }
+    if (userLocation.includes('/users')) {
+      return '마이 뉴뉴';
+    }
+  };
 
   return (
     <Container>
       <Content>
         <Arrow onClick={() => navigate(-1)} />
-        <Title>마이뉴뉴</Title>
-        <Setting />
+        <Title>{title()}</Title>
+        {userLocation.includes('/users') && <Setting />}
       </Content>
     </Container>
   );
 };
 
-export default UserNav;
+export default EtcNav;
 
 const Container = styled.div`
   display: flex;

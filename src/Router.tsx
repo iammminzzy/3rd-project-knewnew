@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
+import Nav from './components/Nav/Nav';
 import Footer from './components/Footer/Footer';
 
 // import Home from './pages/Home/Home';
@@ -15,6 +16,7 @@ import SignIn from './pages/SignIn/SignIn';
 export function Router() {
   return (
     <BrowserRouter>
+      <Nav />
       <Routes>
         <Route path="/" element={<Navigate to="/feedlist" />} />
         <Route path="/feedlist" element={<ItemList />} />

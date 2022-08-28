@@ -5,15 +5,11 @@ export default function Search() {
   const [keywords, setKeywords] = useState<string[]>([]);
 
   useEffect(() => {
-    console.log('제발하느님');
     if (typeof window !== 'undefined') {
-      console.log('왜안대냐고요');
       const result = localStorage.getItem('keywords') || '[]';
       setKeywords(JSON.parse(result));
     }
   }, []);
-
-  console.log(keywords);
 
   return (
     <Container>

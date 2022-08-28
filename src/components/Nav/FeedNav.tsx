@@ -8,7 +8,7 @@ const FeedNav = () => {
   const [openCategory, setOpenCategory] = useState(false);
   const handleFollow = () => {
     setScrollY(window.pageYOffset);
-    if (scrollY > 150) {
+    if (scrollY > 50) {
       return setOpenCategory(true);
     }
     return setOpenCategory(false);
