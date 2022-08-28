@@ -6,7 +6,6 @@ import { useInfiniteQuery } from 'react-query';
 import { useInView } from 'react-intersection-observer';
 import { getFeed } from '../../api';
 import { GetFeedQueryType } from '../../types/feed';
-import theme from '../../styles/theme';
 
 const fetchPostList = async (pageParam: number) => {
   const res = await axios.get(
@@ -71,7 +70,7 @@ export default ItemList;
 
 const ItemListWrap = styled.div`
   position: relative;
-  margin: 75px auto;
+  margin: 120px auto;
 
   font-family: ${({ theme }) => theme.fonts.fontFamily};
   white-space: pre-wrap;
@@ -81,7 +80,7 @@ const ItemListWrap = styled.div`
   }
 
   @media (max-width: 767px) {
-    margin: 75px 10px;
+    margin: 120px 10px;
   }
 `;
 
