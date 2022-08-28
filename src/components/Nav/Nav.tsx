@@ -25,6 +25,10 @@ const NavBar = styled.header`
   position: fixed;
   top: 0;
   z-index: 1;
+
+  width: 100%;
+  display: flex;
+  justify-content: center;
 `;
 
 export default Nav;

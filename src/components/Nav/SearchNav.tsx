@@ -62,9 +62,7 @@ const Container = styled.div`
   display: flex;
   align-items: center;
 
-  position: fixed;
-  max-width: 480px;
-
+  max-width: 768px;
   width: 100%;
   min-height: 64px;
 

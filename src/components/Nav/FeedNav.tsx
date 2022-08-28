@@ -55,9 +55,7 @@ const FeedNav = () => {
 export default FeedNav;
 
 const Container = styled.div`
-  position: fixed;
-  max-width: 480px;
-
+  max-width: 768px;
   width: 100%;
   background-color: ${({ theme }) => theme.colors.white80};
   border: 1px solid ${({ theme }) => theme.colors.white80};
