@@ -11,18 +11,21 @@ import {
 } from 'react-icons/fi';
 import { BiComment } from 'react-icons/bi';
 
-function Item({ item }: { item: GetFeedQueryType }) {
+function Item({ item }: { item: any }) {
   const navigate = useNavigate();
-
   return (
-    <ItemWrap onClick={() => navigate(`/detail/${item.id}`)}>
+    <ItemWrap
+      onClick={() => {
+        navigate('/detail/1');
+      }}
+    >
       <UserWrap>
         <UserProfileWrap>
           <ProfileImg
             src="https://images.unsplash.com/photo-1660678473509-120139e9317b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=872&q=80"
             alt=""
           />
-          <Nickname>{item.nickname}</Nickname>
+          <Nickname>{item.userId}</Nickname>
           <ProfileTag>· {item.writertag}</ProfileTag>
         </UserProfileWrap>
         <MoreWrap>
@@ -40,13 +43,13 @@ function Item({ item }: { item: GetFeedQueryType }) {
         )}
         <ProductLink>제품 링크 〉</ProductLink>
         <MainTextWrap>
-          <MainText>{item.content}</MainText>
+          <MainText>{item.body}</MainText>
         </MainTextWrap>
         <ImgListWrap>
-          {item.img
+          {/* {item.img
             .concat({ id: -1, url: '' }, { id: -2, url: '' })
             .slice(0, 3)
-            .map(image => {
+            .map((image: any) => {
               return (
                 <ImgWrap key={image.id} isMorePicture={item.img.length}>
                   <div>
@@ -55,7 +58,7 @@ function Item({ item }: { item: GetFeedQueryType }) {
                   {image.url && <UserUploadImg src={image.url} alt="" />}
                 </ImgWrap>
               );
-            })}
+            })} */}
         </ImgListWrap>
         <IconWrap>
           <div>
