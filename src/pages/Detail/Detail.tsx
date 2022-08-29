@@ -24,7 +24,6 @@ function Detail() {
     }
   );
 
-  console.log(detail);
   if (getDetailQuery.isLoading) {
     return <span>loading...</span>;
   }
@@ -37,8 +36,6 @@ function Detail() {
     slidesToShow: 1,
     slidesToScroll: 1,
   };
-
-  console.log(detail?.hashtags[0]);
 
   return (
     <DetailWrap>
@@ -149,14 +146,13 @@ const DetailWrap = styled.div`
   }
 `;
 
-const Header = styled.div`
+export const Header = styled.div`
   position: fixed;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 90px;
-  padding: 20px 0;
+  padding: 34px 0;
   background-color: #fff;
   border-bottom: 1px solid #ddd;
   font-size: 20px;
@@ -173,7 +169,7 @@ const Header = styled.div`
   @media (max-width: 767px) {
     left: 10px;
     right: 10px;
-    padding: 10px 0;
+    padding: 29px 0;
     font-size: 16px;
 
     svg {
@@ -182,9 +178,13 @@ const Header = styled.div`
   }
 `;
 
-const ToBack = styled.div`
+export const ToBack = styled.div`
   position: absolute;
   left: 5px;
+
+  svg:hover {
+    cursor: pointer;
+  }
 `;
 
 const ContentsWrap = styled.div`
@@ -375,7 +375,12 @@ const MainText = styled.p`
 const SliderWrap = styled(Slider)`
   margin-bottom: 16px;
 
-  .slick-slide div {
+  .slick-track {
+    display: flex;
+    gap: 10px;
+  }
+
+  .slick-slide {
     outline: none;
   }
 
