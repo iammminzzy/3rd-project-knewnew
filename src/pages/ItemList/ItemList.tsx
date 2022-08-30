@@ -9,9 +9,9 @@ import { GetFeedQueryType } from '../../types/feed';
 
 const fetchPostList = async (pageParam: number) => {
   const res = await axios.get(
-    `https://jsonplaceholder.typicode.com/posts?_page=${pageParam}`
+    `http://192.168.0.18:8000/review/?page=${pageParam}`
   );
-  const posts = res.data;
+  const posts = res.data.results;
   return { posts, nextPage: pageParam + 1 };
 };
 
@@ -45,7 +45,30 @@ function ItemList() {
 
   const content = data?.pages.map(pg => {
     return pg.posts.map(
-      (item: { body: string; id: number; title: string; userId: number }) => {
+      (item: {
+        id: number;
+        user: {
+          id: number;
+          nickname: string;
+          profile_image: string | null;
+          tag: string;
+        };
+        reaction: {
+          id: number;
+          name: string;
+        };
+        product: {
+          id: number;
+          name: string;
+        };
+        description: string;
+        images: string[];
+        view_count: number;
+        comment_count: number;
+        like_count: number;
+        bookmark_count: number;
+        is_updated: boolean;
+      }) => {
         return <Item key={item.id} item={item} />;
       }
     );

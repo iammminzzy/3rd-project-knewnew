@@ -22,60 +22,68 @@ function Item({ item }: { item: any }) {
       <UserWrap>
         <UserProfileWrap>
           <ProfileImg
-            src="https://images.unsplash.com/photo-1660678473509-120139e9317b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=872&q=80"
+            src={
+              item.user.profile_image != (undefined || null)
+                ? item.user.profile_image
+                : 'https://images.unsplash.com/photo-1660678473509-120139e9317b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=872&q=80'
+            }
             alt=""
           />
-          <Nickname>{item.userId}</Nickname>
-          <ProfileTag>· {item.writertag}</ProfileTag>
+          <Nickname>{item.user.nickname}</Nickname>
+          <ProfileTag>· {item.user.tag}</ProfileTag>
         </UserProfileWrap>
         <MoreWrap>
           <FiMoreHorizontal />
-          {item.modified ? <span>수정됨</span> : null}
+          {item.is_updated ? <span>수정됨</span> : null}
         </MoreWrap>
       </UserWrap>
       <Article>
-        {item.score === 1 ? (
+        {item.reaction.id === 1 ? (
           <Best>♥ 최고예요</Best>
-        ) : item.score === 2 ? (
+        ) : item.reaction.id === 2 ? (
           <Soso>● 괜찮아요</Soso>
-        ) : (
+        ) : item.reaction.id === 3 ? (
           <Bad>Ⅹ 별로예요</Bad>
+        ) : (
+          <Question>? 궁금해요</Question>
         )}
-        <ProductLink>제품 링크 〉</ProductLink>
+        {item.product.name && <ProductLink>{item.product.name} 〉</ProductLink>}
         <MainTextWrap>
-          <MainText>{item.body}</MainText>
+          <MainText>{item.description}</MainText>
         </MainTextWrap>
         <ImgListWrap>
-          {/* {item.img
-            .concat({ id: -1, url: '' }, { id: -2, url: '' })
-            .slice(0, 3)
-            .map((image: any) => {
-              return (
-                <ImgWrap key={image.id} isMorePicture={item.img.length}>
-                  <div>
-                    <FiMoreHorizontal />
-                  </div>
-                  {image.url && <UserUploadImg src={image.url} alt="" />}
-                </ImgWrap>
-              );
-            })} */}
+          {item.images
+            ? item.images
+                .concat({ id: -1, url: '' }, { id: -2, url: '' })
+                .slice(0, 3)
+                .map((image: any) => {
+                  return (
+                    <ImgWrap key={image.id} isMorePicture={item.images.length}>
+                      <div>
+                        <FiMoreHorizontal />
+                      </div>
+                      {image.url && <UserUploadImg src={image.url} alt="" />}
+                    </ImgWrap>
+                  );
+                })
+            : null}
         </ImgListWrap>
         <IconWrap>
           <div>
             <FiEye />
-            <span>9999</span>
+            <span>{item.view_count}</span>
           </div>
           <div>
             <BiComment />
-            <span>999</span>
+            <span>{item.comment_count}</span>
           </div>
           <div>
             <FiThumbsUp />
-            <span>99</span>
+            <span>{item.like_count}</span>
           </div>
           <div>
             <FiBookmark />
-            <span>999</span>
+            <span>{item.bookmark_count}</span>
           </div>
         </IconWrap>
       </Article>
@@ -203,6 +211,11 @@ const Soso = styled.p`
 `;
 
 const Bad = styled.p`
+  color: #000000;
+  font-weight: 700;
+`;
+
+const Question = styled.p`
   color: #000000;
   font-weight: 700;
 `;
