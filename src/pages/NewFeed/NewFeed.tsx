@@ -48,12 +48,6 @@ export default function NewFeed() {
 
   return (
     <NewFeedWrap>
-      <Header>
-        <ToBack>
-          <IoIosArrowBack />
-        </ToBack>
-        <div>글쓰기</div>
-      </Header>
       <TitleWrap>
         <SubTitle>오늘의 푸드로그는</SubTitle>
         <Title>한마디로, </Title>
@@ -326,7 +320,7 @@ const NewFeedWrap = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  margin: 0 auto 80px auto;
+  margin: 60px auto 80px auto;
   font-family: ${({ theme }) => theme.fonts.fontFamily};
 
   @media (min-width: 768px) {
@@ -335,46 +329,6 @@ const NewFeedWrap = styled.div`
 
   @media (max-width: 767px) {
   }
-`;
-
-const Header = styled.div`
-  position: sticky;
-  top: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 90px;
-  padding: 20px 0;
-  background-color: #fff;
-  border-bottom: 1px solid #ddd;
-  font-size: 20px;
-  z-index: 10;
-
-  svg {
-    font-size: 30px;
-  }
-
-  @media (min-width: 768px) {
-    width: 748px;
-  }
-
-  @media (max-width: 767px) {
-    left: 10px;
-    right: 10px;
-    padding: 10px 0;
-    height: 70px;
-    font-size: 16px;
-
-    svg {
-      font-size: 20px;
-    }
-  }
-`;
-
-const ToBack = styled.div`
-  position: absolute;
-  left: 5px;
 `;
 
 const TitleWrap = styled.div`
