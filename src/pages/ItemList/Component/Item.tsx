@@ -1,6 +1,6 @@
 import React from 'react';
-import styled from 'styled-components';
 import { useNavigate } from 'react-router';
+import styled from 'styled-components';
 import { GetFeedQueryType } from '../../../types/feed';
 
 import {

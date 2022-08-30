@@ -1,7 +1,26 @@
 import React from 'react';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
 export default function SignIn() {
+  const navigate = useNavigate();
+  const kakaoAuthLink = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_REDIRECT_URI}&response_type=code`;
+
+  const toSnsLogin = (sns: string) => {
+    switch (sns) {
+      case 'kakao':
+        window.location.href = kakaoAuthLink;
+        break;
+
+      case 'naver':
+        navigate('/naverLogin');
+        break;
+
+      default:
+        alert('준비중입니다');
+    }
+  };
+
   return (
     <Container>
       <Content>
@@ -19,7 +38,12 @@ export default function SignIn() {
         <Section>또는</Section>
         <ButtonWapper>
           {SNS_SIGNIN_DATA.map(item => (
-            <SnsSignInButton key={item.name} alt="icon" src={item.image} />
+            <SnsSignInButton
+              key={item.name}
+              alt="icon"
+              src={item.image}
+              onClick={() => toSnsLogin(item.name)}
+            />
           ))}
         </ButtonWapper>
       </Content>
@@ -33,6 +57,14 @@ const SNS_SIGNIN_DATA = [
   { id: 3, name: 'google', image: 'images/icon/google_icon.png' },
   { id: 4, name: 'apple', image: 'images/icon/apple_icon.jpeg' },
 ];
+
+// const Status = styled.div`
+//   height: 100vh;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   font-size: 70px;
+// `;
 
 const Container = styled.div`
   display: flex;
@@ -82,14 +114,14 @@ const Input = styled.input`
   min-width: 260px;
 
   padding: 13px;
-  border: 1px solid #ededed;
+  border: 1px solid ${({ theme }) => theme.colors.white50};
   border-radius: 5px;
 
   font-size: 15px;
   opacity: 0.9;
 
   &:focus {
-    outline: 1px solid #fe5d5d;
+    border: 1px solid ${({ theme }) => theme.colors.red};
   }
 `;
 
@@ -97,14 +129,14 @@ const SignInButton = styled.button`
   min-width: 260px;
 
   padding: 13px;
-  border: 1px solid #ededed;
+  border: 1px solid ${({ theme }) => theme.colors.white50};
   border-radius: 5px;
 
   font-size: 16px;
   font-weight: 600;
 
-  background-color: #fe5d5d;
-  color: white;
+  background-color: ${({ theme }) => theme.colors.red};
+  color: ${({ theme }) => theme.colors.white};
   cursor: pointer;
 
   opacity: 0.9;
@@ -117,6 +149,7 @@ const ButtonWapper = styled.div`
 
 const SnsSignInButton = styled.img`
   width: 50px;
+  cursor: pointer;
 `;
 
 const Section = styled.p`
