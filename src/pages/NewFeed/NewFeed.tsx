@@ -313,6 +313,7 @@ export default function NewFeed() {
           onClick={() => {
             handleNextPage();
           }}
+          disabled={score != 0 && foodTag.length != 0 ? false : true}
         >
           다음으로
         </button>
@@ -529,10 +530,18 @@ const NextBtn = styled.div`
     border-radius: 5px;
     color: red;
     font-size: 18px;
+    cursor: pointer;
 
     @media (max-width: 480px) {
       padding: 10px 0;
       font-size: 13px;
+    }
+
+    :disabled {
+      background-color: #f3f3f3;
+      border: 1px solid #aaa;
+      color: #aaa;
+      cursor: default;
     }
   }
 `;
