@@ -11,6 +11,7 @@ import Detail from './pages/Detail/Detail';
 import NotFound from './pages/NotFound/NotFound';
 import ItemList from './pages/ItemList/ItemList';
 import SignIn from './pages/SignIn/SignIn';
+import NewFeedWrite from './pages/NewFeed/NewFeedWrite';
 import OptionInfo from './pages/OptionInfo/OptionInfo';
 import SocialLogin from './pages/SignIn/SocialLogin';
 
@@ -21,6 +22,7 @@ export function Router() {
         <Route path="/" element={<Navigate to="/feedlist" />} />
         <Route path="/feedlist" element={<ItemList />} />
         <Route path="/newfeed" element={<NewFeed />} />
+        <Route path="/newfeedwrite" element={<NewFeedWrite />} />
         <Route path="/search" element={<Search />} />
         <Route path="/users" element={<Users />} />
         <Route path="/detail/:id" element={<Detail />} />
