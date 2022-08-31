@@ -8,6 +8,7 @@ import {
   FaQuestion,
   FaShoppingCart,
 } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
 
 export default function NewFeed() {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ export default function NewFeed() {
   const [foodTag, setFoodTag] = useState<string[]>([]);
   const [store, setStore] = useState('구매처를 선택하세요');
   const [showBox, setShowBox] = useState(false);
+  const token = useSelector((state: any) => state.tokenState.value);
 
   const handleTagList = (item: string) => {
     const index = foodTag.indexOf(item);

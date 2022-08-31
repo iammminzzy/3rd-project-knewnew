@@ -2,10 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 
 interface IProps {
-  closeModal: () => void;
+  setModalOpen: (isOpen: boolean) => void;
 }
 
-const Modal = ({ closeModal }: IProps) => {
+const Modal = ({ setModalOpen }: IProps) => {
   return (
     <Container>
       <Overlay>
@@ -33,7 +33,9 @@ const Modal = ({ closeModal }: IProps) => {
                 </Title>
               </a>
             </Btn>
-            <SmailBtn onClick={closeModal}>모바일 웹으로 볼래요</SmailBtn>
+            <SmailBtn onClick={() => setModalOpen(false)}>
+              모바일 웹으로 볼래요
+            </SmailBtn>
           </BtnContainer>
         </Content>
       </Overlay>
