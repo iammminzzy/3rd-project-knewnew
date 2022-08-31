@@ -13,6 +13,7 @@ import ItemList from './pages/ItemList/ItemList';
 import SignIn from './pages/SignIn/SignIn';
 import KakaoLogin from './pages/SignIn/KakaoLogin';
 import NaverLogin from './pages/SignIn/NaverLogin';
+import NewFeedWrite from './pages/NewFeed/NewFeedWrite';
 
 export function Router() {
   return (
@@ -21,6 +22,7 @@ export function Router() {
         <Route path="/" element={<Navigate to="/feedlist" />} />
         <Route path="/feedlist" element={<ItemList />} />
         <Route path="/newfeed" element={<NewFeed />} />
+        <Route path="/newfeedwrite" element={<NewFeedWrite />} />
         <Route path="/search" element={<Search />} />
         <Route path="/users" element={<Users />} />
         <Route path="/detail/:id" element={<Detail />} />

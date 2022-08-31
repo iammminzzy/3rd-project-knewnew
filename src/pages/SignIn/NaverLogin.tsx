@@ -1,10 +1,10 @@
 import axios from 'axios';
 import React, { useEffect } from 'react';
-import { useQuery } from 'react-query';
-import Error from '../../components/Status/Error';
-import Loading from '../../components/Status/Loading';
-import OptionInfo from '../OptionInfo/OptionInfo';
 import { useLocation } from 'react-router';
+import { useQuery } from 'react-query';
+import OptionInfo from '../OptionInfo/OptionInfo';
+import Loading from '../../components/Status/Loading';
+import Error from '../../components/Status/Error';
 
 declare global {
   interface Window {

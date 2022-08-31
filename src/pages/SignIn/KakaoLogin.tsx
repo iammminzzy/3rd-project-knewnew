@@ -3,8 +3,8 @@ import axios from 'axios';
 import { useQuery } from 'react-query';
 import { useSearchParams } from 'react-router-dom';
 import OptionInfo from '../OptionInfo/OptionInfo';
-import Error from '../../components/Status/Error';
 import Loading from '../../components/Status/Loading';
+import Error from '../../components/Status/Error';
 
 export default function KakaoLogin() {
   const [searchParams] = useSearchParams();
