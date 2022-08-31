@@ -11,6 +11,9 @@ import GlobalStyle from './styles/GlobalStyle';
 import theme from './styles/theme';
 import Modal from '../src/components/Modal/Modal';
 
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+
 function App() {
   const [modalOpen, setModalOpen] = useState(true);
   const closeModal = (): void => {

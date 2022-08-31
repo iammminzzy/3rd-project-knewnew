@@ -1,34 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-import { getDetail } from '../../api';
-import { GetDetailQueryType } from '../../types/feed';
 
-import { FiMoreHorizontal, FiThumbsUp, FiBookmark } from 'react-icons/fi';
-import { BiStore } from 'react-icons/bi';
-import { IoIosArrowBack } from 'react-icons/io';
-import { BsArrow90DegRight } from 'react-icons/bs';
-import { HiOutlineShare, HiTag } from 'react-icons/hi';
+import {
+  FiMoreHorizontal,
+  FiThumbsUp,
+  FiBookmark,
+  BiStore,
+  BsArrow90DegRight,
+  HiOutlineShare,
+  HiTag,
+} from '../../utils/common/icons';
+
+import { getDetail } from '../../api/fetchDetail';
+import { DetailType } from '../../types/detail';
+
+import ImageDetail from './ImageDetail';
+import getDifference from '../../utils/common/getDifference';
 
 function Detail() {
-  const [detail, setDetail] = useState<GetDetailQueryType>();
-  const [comment, setComment] = useState([]);
-  const getDetailQuery = useQuery<GetDetailQueryType, Error>(
-    'getDetail',
-    () => getDetail(),
-    {
-      onSuccess: data => {
-        setDetail(data);
-      },
-    }
-  );
+  const id = useParams();
+  const [comment, setComment] = useState<string[]>([]);
+  const [openDetail, setOpenDetail] = useState(false);
+  const [inputValue, setInputValue] = useState<string>('');
+  const { data } = useQuery<DetailType>('getDetail', getDetail);
+  const difference = getDifference(data?.created_at);
 
-  if (getDetailQuery.isLoading) {
-    return <span>loading...</span>;
-  }
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event?.target.value);
+  };
+
+  const addComment = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setComment(prev => [...prev, inputValue]);
+    setInputValue('');
+  };
 
   const settings = {
     arrows: false,
@@ -39,50 +47,48 @@ function Detail() {
     slidesToScroll: 1,
   };
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <DetailWrap>
-      <Header>
-        <ToBack>
-          <IoIosArrowBack />
-        </ToBack>
-        <div>게시글 상세</div>
-      </Header>
       <ContentsWrap>
         <UserWrap>
           <UserProfileWrap>
-            <ProfileImg src={detail?.profileImage} alt="" />
+            <ProfileImg src={data?.user.profile_image} alt="" />
             <ProfileInfo>
-              <Nickname>{detail?.nickname}</Nickname>
-              <ProfileTag>{detail?.writertag}</ProfileTag>
+              <Nickname>{data?.user.nickname}</Nickname>
+              <ProfileTag>{data?.user.tags}</ProfileTag>
             </ProfileInfo>
           </UserProfileWrap>
           <MoreWrap>
             <FiMoreHorizontal />
-            <CreatedTime>{detail?.timeBefore}시간 전</CreatedTime>
+            <CreatedTime>{difference}</CreatedTime>
           </MoreWrap>
         </UserWrap>
         <Article>
           <ArticleHeader>
-            {detail?.score === 1 ? (
+            {data?.reaction === '최고예요' ? (
               <Best>♥ 최고예요</Best>
-            ) : detail?.score === 2 ? (
+            ) : data?.reaction === '괜찮아요' ? (
               <Soso>● 괜찮아요</Soso>
             ) : (
               <Bad>X 별로예요</Bad>
             )}
             <Store>
               <BiStore />
-              {detail?.store}
+              {data?.retailer}
             </Store>
           </ArticleHeader>
           <ProductLink>제품 링크 ﹥</ProductLink>
           <MainTextWrap>
-            <MainText>{detail?.content}</MainText>
+            <MainText>{data?.description}</MainText>
           </MainTextWrap>
           <SliderWrap {...settings}>
-            {detail?.img.map(image => {
+            {data?.images.map(image => {
               return (
-                <ImgWrap key={image.id}>
+                <ImgWrap key={image.url} onClick={() => setOpenDetail(true)}>
                   <ContentImg src={image.url} />
                 </ImgWrap>
               );
@@ -91,60 +97,71 @@ function Detail() {
           <HashTagWrap>
             <HiTag />
             <HashTags>
-              {detail?.hashtags.map((hashtag, idx) => {
+              {data?.food_tags.map((hashtag, idx) => {
                 return <div key={idx}>{hashtag}</div>;
               })}
             </HashTags>
           </HashTagWrap>
           <IconWrap>
-            {SCORE_ICON.map(item => (
-              <div key={item.name}>{item.images}</div>
-            ))}
+            <div>
+              <BsArrow90DegRight />
+              {data?.quotation_count}
+            </div>
+            <div>
+              <FiThumbsUp />
+              {data?.like_count}
+            </div>
+            <div>
+              <FiBookmark />
+              {data?.bookmark_count}
+            </div>
+            <div>
+              <HiOutlineShare />
+              {data?.share_count}
+            </div>
           </IconWrap>
         </Article>
       </ContentsWrap>
       <HorizontalLine />
       <CommentWrap>
-        <CommentTotal>작성된 댓글 0개</CommentTotal>
+        <CommentTotal>작성된 댓글 {comment?.length}개</CommentTotal>
         <CommentList>
-          <div>23123</div>
+          {comment.map(item => (
+            <CommentWapper key={item}>
+              <ProfileImg src={data?.user.profile_image} alt="" />
+              <ProfileInfo>
+                <Nickname>{data?.user.nickname}</Nickname>
+                <Comment key={item}>{item}</Comment>
+                <CommentButton>
+                  <ReComment>답글달기</ReComment>
+                  <LikeButton>좋아요</LikeButton>
+                </CommentButton>
+              </ProfileInfo>
+            </CommentWapper>
+          ))}
         </CommentList>
       </CommentWrap>
       <CommentInputWrap>
-        <CommentInput
-          type="text"
-          placeholder="댓글을 남겨보세요."
-        ></CommentInput>
-        <CommentBtn disabled>작성</CommentBtn>
+        <form onSubmit={addComment}>
+          <CommentInput
+            onChange={onChange}
+            value={inputValue}
+            type="text"
+            placeholder="댓글을 남겨보세요."
+          ></CommentInput>
+          <CommentBtn type="submit" disabled={!inputValue}>
+            작성
+          </CommentBtn>
+        </form>
       </CommentInputWrap>
+      {openDetail && (
+        <ImageDetail img={data?.images} close={() => setOpenDetail(false)} />
+      )}
     </DetailWrap>
   );
 }
 
 export default Detail;
-
-const SCORE_ICON = [
-  {
-    id: 1,
-    name: 'quotation',
-    images: <BsArrow90DegRight />,
-  },
-  {
-    id: 2,
-    name: 'like',
-    images: <FiThumbsUp />,
-  },
-  {
-    id: 3,
-    name: 'bookmark',
-    images: <FiBookmark />,
-  },
-  {
-    id: 4,
-    name: 'share',
-    images: <HiOutlineShare />,
-  },
-];
 
 const DetailWrap = styled.div`
   position: relative;
@@ -158,41 +175,6 @@ const DetailWrap = styled.div`
 
   @media (max-width: 767px) {
   }
-`;
-
-const Header = styled.div`
-  position: fixed;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  width: 100%;
-  height: 8%;
-
-  background-color: ${({ theme }) => theme.colors.white};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.white50};
-  font-size: 20px;
-  z-index: 1;
-
-  svg {
-    font-size: 30px;
-  }
-
-  @media (min-width: 768px) {
-  }
-
-  @media (max-width: 767px) {
-    font-size: 16px;
-
-    svg {
-      font-size: 20px;
-    }
-  }
-`;
-
-const ToBack = styled.div`
-  position: absolute;
-  left: 5px;
 `;
 
 const ContentsWrap = styled.div`
@@ -228,9 +210,10 @@ const ProfileImg = styled.img`
 
 const ProfileInfo = styled.div`
   display: flex;
+  justify-content: center;
   flex-direction: column;
   gap: 9px;
-  margin-left: 20px;
+  margin-left: 18px;
 `;
 
 const Nickname = styled.span`
@@ -450,12 +433,6 @@ const IconWrap = styled.div`
     position: relative;
     margin: 0 10px;
 
-    span {
-      position: relative;
-      top: -7px;
-      padding-left: 5px;
-    }
-
     svg {
       font-size: 30px;
     }
@@ -517,14 +494,16 @@ const CommentList = styled.div`
 const CommentInputWrap = styled.div`
   position: fixed;
   bottom: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   width: 100%;
 
   padding: 10px;
   background-color: #fff;
   border-top: 1px solid #ddd;
+
+  form {
+    display: flex;
+    justify-content: space-between;
+  }
 
   @media (min-width: 768px) {
     width: 748px;
@@ -579,3 +558,25 @@ const CommentBtn = styled.button`
     color: #bbb;
   }
 `;
+
+const CommentWapper = styled(UserProfileWrap)`
+  margin: 10px 0px;
+`;
+
+const Comment = styled.span`
+  color: ${({ theme }) => theme.colors.black80};
+`;
+
+const CommentButton = styled.div`
+  display: flex;
+  gap: 10px;
+  span {
+    color: ${({ theme }) => theme.colors.black50};
+  }
+`;
+
+const ReComment = styled(Comment)`
+  font-size: 13px;
+`;
+
+const LikeButton = styled(ReComment)``;

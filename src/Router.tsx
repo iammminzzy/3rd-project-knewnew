@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import Footer from './components/Footer/Footer';
+import Nav from './components/Nav/Nav';
 
 // import Home from './pages/Home/Home';
 import NewFeed from './pages/NewFeed/NewFeed';
@@ -15,6 +16,7 @@ import SignIn from './pages/SignIn/SignIn';
 export function Router() {
   return (
     <BrowserRouter>
+      <Nav />
       <Routes>
         <Route path="/" element={<Navigate to="/feedlist" />} />
         <Route path="/feedlist" element={<ItemList />} />
