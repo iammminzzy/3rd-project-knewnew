@@ -6,28 +6,28 @@ import OptionInfo from '../OptionInfo/OptionInfo';
 import Loading from '../../components/Status/Loading';
 import Error from '../../components/Status/Error';
 
-declare global {
-  interface Window {
-    naver: any;
-  }
-}
+// declare global {
+//   interface Window {
+//     naver: any;
+//   }
+// }
 
-const { naver } = window;
+// const { naver } = window;
 
 export default function NaverLogin() {
   const location = useLocation();
 
-  const initializeNaverLogin = () => {
-    const naverLogin = new naver.LoginWithNaverId({
-      clientId: process.env.REACT_APP_NAVER_CLIENT_ID,
-      callbackUrl: process.env.REACT_APP_NAVER_CALLBACK_URL,
-      isPopup: false,
-      loginButton: { color: 'green', type: 3, height: 30 },
-      callbackHandle: true,
-    });
+  // const initializeNaverLogin = () => {
+  //   const naverLogin = new naver.LoginWithNaverId({
+  //     clientId: process.env.REACT_APP_NAVER_CLIENT_ID,
+  //     callbackUrl: process.env.REACT_APP_NAVER_CALLBACK_URL,
+  //     isPopup: false,
+  //     loginButton: { color: 'green', type: 3, height: 30 },
+  //     callbackHandle: true,
+  //   });
 
-    naverLogin.init();
-  };
+  //   naverLogin.init();
+  // };
 
   const naverToken = location.hash && location.hash.split('=')[1].split('&')[0];
 
@@ -50,7 +50,7 @@ export default function NaverLogin() {
   });
 
   useEffect(() => {
-    initializeNaverLogin();
+    // initializeNaverLogin();
     getNaverUserInfo();
   }, []);
 

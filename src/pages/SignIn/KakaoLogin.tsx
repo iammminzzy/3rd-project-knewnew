@@ -8,8 +8,6 @@ import Error from '../../components/Status/Error';
 
 export default function KakaoLogin() {
   const [searchParams] = useSearchParams();
-
-  /* Kakao Login */
   const AUTHORIZE_CODE = searchParams.get('code');
   const kakaoTokenLink = `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.REACT_APP_KAKAO_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&code=${AUTHORIZE_CODE}`;
 
@@ -17,7 +15,6 @@ export default function KakaoLogin() {
   const getKakaoToken = async () => {
     return await axios.post(kakaoTokenLink, {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      maxRedirects: 0,
     });
   };
 
