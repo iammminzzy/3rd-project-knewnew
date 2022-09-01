@@ -1,68 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useQuery } from 'react-query';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Header, ToBack } from '../Detail/Detail';
 import { IoIosArrowBack } from 'react-icons/io';
 import { AiOutlineCheck } from 'react-icons/ai';
 
-export default function OptionInfo() {
+interface UserInfoProps {
+  userInfo: { user: string };
+}
+
+export default function OptionInfo({ userInfo }: UserInfoProps) {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const [isToken, setIsToken] = useState<boolean>(false);
-  const [inputValue, setInputValue] = useState<object>({});
+  const [inputValue, setInputValue] = useState({});
   const isDisabled = Object.keys(inputValue).length === 3;
-
-  /* Kakao Login */
-  const AUTHORIZE_CODE = searchParams.get('code');
-  const kakaoTokenLink = `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.REACT_APP_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_REDIRECT_URI}&code=${AUTHORIZE_CODE}`;
-
-  //토큰 받기(from Kakao)
-  const getKakaoToken = async () => {
-    return await axios.post(kakaoTokenLink, {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    });
-  };
-
-  const {
-    data: kakaoToken,
-    isLoading: kakaoTokenIsLoding,
-    isError: kakaoTokenIsError,
-  } = useQuery('getKakaoToken', getKakaoToken, {
-    onSuccess: kakao => {
-      localStorage.setItem('kakaoToken', kakao.data.access_token);
-      setIsToken(!isToken);
-    },
-  });
-
-  //사용자 정보 받기(from BackEnd)
-  const getUserInfo = async () => {
-    // return await axios.post('/data/optionInfo.json', {
-    //   kakaoToken: localStorage.getItem('kakaoToken'),
-    // });
-    return await axios.get('/data/optionInfo.json');
-  };
-
-  const {
-    data: kakaoUserInfo,
-    isLoading: kakaoUserInfoIsLoding,
-    isError: kakaoUserInfoIsError,
-  } = useQuery('getUserInfo', getUserInfo, {
-    enabled: !!kakaoToken,
-  });
-
-  useEffect(() => {
-    getKakaoToken();
-    getUserInfo();
-  }, []);
-
-  if (kakaoTokenIsLoding || kakaoUserInfoIsLoding) {
-    return <Status>Loading. . .</Status>;
-  }
-  if (kakaoTokenIsError || kakaoUserInfoIsError) {
-    return <Status>Error ⚠️</Status>;
-  }
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
@@ -74,7 +24,7 @@ export default function OptionInfo() {
   };
 
   const handleSubmit = () => {
-    axios.post(`api`, inputValue).then(res => console.log(res));
+    // axios.post(`api`, inputValue).then(res => console.log(res));
     alert('뉴뉴에 오신 것을 환영합니다 (>_<)/');
     navigate('/');
   };
@@ -90,8 +40,8 @@ export default function OptionInfo() {
       </NoBorderHeader>
       <OptionInfoWrap>
         <Greeting>
-          <User>{kakaoUserInfo?.data.user}</User>님 반가워요!
-          {/* <User>minjee801#9518</User>님 반가워요! */}
+          {/* <User>{userInfo.user}</User>님 반가워요! */}
+          <User>뉴뉴</User>님 반가워요!
         </Greeting>
         <Bold>슬기로운 뉴뉴생활을 위해 나를 소개해주세요.</Bold>
         <Description>
@@ -110,13 +60,28 @@ export default function OptionInfo() {
                     {option.map((choice, idx) => {
                       return (
                         <RadioInputWrap key={idx}>
-                          <RadioInput
-                            type="radio"
-                            name={name}
-                            value={choice}
-                            onChange={handleInput}
-                          />
-                          <label>{choice}</label>
+                          {choice !== '기타' ? (
+                            <>
+                              <RadioInput
+                                type="radio"
+                                name={name}
+                                value={choice}
+                                onChange={handleInput}
+                              />
+                              <label>{choice}</label>
+                            </>
+                          ) : (
+                            <>
+                              <RadioInput type="radio" name={name} value="" />
+                              <label>{choice}</label>
+                              <EtcInput
+                                type="text"
+                                name="occupation"
+                                placeholder="직접 입력해주세요"
+                                onChange={handleInput}
+                              />
+                            </>
+                          )}
                         </RadioInputWrap>
                       );
                     })}
@@ -176,14 +141,6 @@ const Container = styled.div`
 
 const NoBorderHeader = styled(Header)`
   border-bottom: 1px solid transparent;
-`;
-
-const Status = styled.div`
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 70px;
 `;
 
 const OptionInfoWrap = styled.div`
@@ -255,7 +212,7 @@ const RadioInputWrap = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  height: 20px;
+  padding: 1px 0;
 `;
 
 const RadioInput = styled.input`
@@ -263,6 +220,13 @@ const RadioInput = styled.input`
   height: 15px;
   accent-color: ${({ theme }) => theme.colors.red};
   cursor: pointer;
+`;
+
+const EtcInput = styled.input`
+  height: 100%;
+  padding-top: 1px;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.white50};
+  font-size: 15px;
 `;
 
 const Complete = styled.div`

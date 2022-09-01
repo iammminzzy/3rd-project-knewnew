@@ -1,10 +1,10 @@
 import React from 'react';
-import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
 export default function SignIn() {
-  const navigate = useNavigate();
-  const kakaoAuthLink = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_REDIRECT_URI}&response_type=code`;
+  const kakaoAuthLink = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
+
+  const naverAuthLink = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${process.env.REACT_APP_NAVER_CLIENT_ID}&state=STATE_STRING&redirect_uri=${process.env.REACT_APP_NAVER_REDIRECT_URI}`;
 
   const toSnsLogin = (sns: string) => {
     switch (sns) {
@@ -13,7 +13,7 @@ export default function SignIn() {
         break;
 
       case 'naver':
-        navigate('/naverLogin');
+        window.location.href = naverAuthLink;
         break;
 
       default:
@@ -57,14 +57,6 @@ const SNS_SIGNIN_DATA = [
   { id: 3, name: 'google', image: 'images/icon/google_icon.png' },
   { id: 4, name: 'apple', image: 'images/icon/apple_icon.jpeg' },
 ];
-
-// const Status = styled.div`
-//   height: 100vh;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   font-size: 70px;
-// `;
 
 const Container = styled.div`
   display: flex;
