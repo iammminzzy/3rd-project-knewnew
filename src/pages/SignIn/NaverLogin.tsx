@@ -1,41 +1,41 @@
-import axios from 'axios';
 import React, { useEffect } from 'react';
-import { useLocation } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
+import axios from 'axios';
 import { useQuery } from 'react-query';
 import OptionInfo from '../OptionInfo/OptionInfo';
 import Loading from '../../components/Status/Loading';
 import Error from '../../components/Status/Error';
 
-// declare global {
-//   interface Window {
-//     naver: any;
-//   }
-// }
-
-// const { naver } = window;
-
 export default function NaverLogin() {
-  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const CODE = searchParams.get('code');
+  const STATE = searchParams.get('state');
+  const naverTokenLink = `/oauth2.0/token?grant_type=authorization_code&client_id=${process.env.REACT_APP_NAVER_CLIENT_ID}&client_secret=${process.env.REACT_APP_NAVER_CLIENT_SECRET}&code=${CODE}&state=${STATE}`;
 
-  // const initializeNaverLogin = () => {
-  //   const naverLogin = new naver.LoginWithNaverId({
-  //     clientId: process.env.REACT_APP_NAVER_CLIENT_ID,
-  //     callbackUrl: process.env.REACT_APP_NAVER_CALLBACK_URL,
-  //     isPopup: false,
-  //     loginButton: { color: 'green', type: 3, height: 30 },
-  //     callbackHandle: true,
-  //   });
+  //토큰 받기(from Naver)
+  const getNaverToken = async () => {
+    return await axios.get(naverTokenLink);
+  };
 
-  //   naverLogin.init();
-  // };
-
-  const naverToken = location.hash && location.hash.split('=')[1].split('&')[0];
+  const {
+    data: naverToken,
+    isLoading: naverTokenIsLoding,
+    isError: naverTokenIsError,
+  } = useQuery('getNaverToken', getNaverToken, {
+    onSuccess: naver => {
+      localStorage.setItem('naverAccessToken', naver.data.access_token);
+    },
+    refetchOnWindowFocus: false,
+    retry: false,
+  });
 
   //사용자 정보 받기(from BackEnd)
+  const naverAccessToken = localStorage.getItem('naverAccessToken');
+
   const getNaverUserInfo = async () => {
-    // return await axios.post(`${process.env.REACT_APP_SERVER_API}`, {
-    //   naverToken,
-    //   withCredentials: true,
+    // return await axios.get('http://192.168.0.230:8000/user/login/naver', {
+    //   headers: { Authorization: JSON.stringify(naverAccessToken) },
+    //   // withCredentials: true, //cors에러 처리를 위해
     // });
     return await axios.get('/data/optionInfo.json');
   };
@@ -47,17 +47,22 @@ export default function NaverLogin() {
   } = useQuery('getnaverUserInfo', getNaverUserInfo, {
     enabled: !!naverToken,
     refetchOnWindowFocus: false,
+    retry: false,
   });
 
   useEffect(() => {
-    // initializeNaverLogin();
-    getNaverUserInfo();
+    if (CODE) {
+      getNaverToken();
+      getNaverUserInfo();
+    } else {
+      alert('네이버 로그인 인증에 실패하였습니다.');
+    }
   }, []);
 
-  if (naverUserInfoIsLoding) {
+  if (naverTokenIsLoding || naverUserInfoIsLoding) {
     return <Loading />;
   }
-  if (naverUserInfoIsError) {
+  if (naverTokenIsError || naverUserInfoIsError) {
     return <Error />;
   }
 
@@ -65,5 +70,5 @@ export default function NaverLogin() {
     return <OptionInfo userInfo={naverUserInfo?.data} />;
   }
 
-  return <div id="naverIdLogin"></div>;
+  return <div>NaverLogin</div>;
 }

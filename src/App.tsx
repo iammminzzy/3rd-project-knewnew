@@ -15,7 +15,7 @@ import { addToken } from './reducer/userSlice';
 import { RootState } from './store/store';
 
 function App() {
-  const [modalOpen, setModalOpen] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
   const token = useSelector((state: RootState) => state.tokenState.value);
   const dispatch = useDispatch();
   const closeModal = (): void => {

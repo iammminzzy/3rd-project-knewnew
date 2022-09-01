@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { useQuery } from 'react-query';
-import { useSearchParams } from 'react-router-dom';
 import OptionInfo from '../OptionInfo/OptionInfo';
 import Loading from '../../components/Status/Loading';
 import Error from '../../components/Status/Error';
@@ -13,7 +13,7 @@ export default function KakaoLogin() {
 
   //토큰 받기(from Kakao)
   const getKakaoToken = async () => {
-    return await axios.post(kakaoTokenLink, {
+    return await axios.get(kakaoTokenLink, {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     });
   };
@@ -24,17 +24,25 @@ export default function KakaoLogin() {
     isError: kakaoTokenIsError,
   } = useQuery('getKakaoToken', getKakaoToken, {
     onSuccess: kakao => {
-      localStorage.setItem('kakaoToken', kakao.data.access_token);
+      localStorage.setItem('kakaoAccessToken', kakao.data.access_token);
     },
     refetchOnWindowFocus: false,
+    retry: false,
   });
 
   //사용자 정보 받기(from BackEnd)
+  const kakaoAccessToken = localStorage.getItem('kakaoAccessToken');
+  console.log('~ token', kakaoAccessToken);
+
   const getKakaoUserInfo = async () => {
-    // return await axios.post('/data/optionInfo.json', {
-    //   kakaoToken: localStorage.getItem('kakaoToken'),
-    // });
-    return await axios.get('/data/optionInfo.json');
+    return await axios.post(
+      'http://192.168.0.230:8000/user/login/kakao',
+      {},
+      {
+        headers: { Authorization: JSON.stringify(kakaoAccessToken) },
+      }
+    );
+    // return await axios.get('/data/optionInfo.json');
   };
 
   const {
@@ -44,6 +52,7 @@ export default function KakaoLogin() {
   } = useQuery('getKakaoUserInfo', getKakaoUserInfo, {
     enabled: !!kakaoToken,
     refetchOnWindowFocus: false,
+    retry: false,
   });
 
   useEffect(() => {

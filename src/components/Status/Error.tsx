@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 export default function Error() {
-  return <Status>Error. . .</Status>;
+  return <Status>Error ⚠️</Status>;
 }
 
 const Status = styled.div`
