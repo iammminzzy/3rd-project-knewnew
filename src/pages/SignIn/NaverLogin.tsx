@@ -51,12 +51,8 @@ export default function NaverLogin() {
   });
 
   useEffect(() => {
-    if (CODE) {
-      getNaverToken();
-      getNaverUserInfo();
-    } else {
-      alert('네이버 로그인 인증에 실패하였습니다.');
-    }
+    getNaverToken();
+    getNaverUserInfo();
   }, []);
 
   if (naverTokenIsLoding || naverUserInfoIsLoding) {

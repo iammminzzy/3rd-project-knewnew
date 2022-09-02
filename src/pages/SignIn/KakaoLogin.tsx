@@ -35,14 +35,14 @@ export default function KakaoLogin() {
   console.log('~ token', kakaoAccessToken);
 
   const getKakaoUserInfo = async () => {
-    return await axios.post(
-      'http://192.168.0.230:8000/user/login/kakao',
-      {},
-      {
-        headers: { Authorization: JSON.stringify(kakaoAccessToken) },
-      }
-    );
-    // return await axios.get('/data/optionInfo.json');
+    // return await axios.post(
+    //   'http://192.168.0.230:8000/user/login/kakao',
+    //   {},
+    //   {
+    //     headers: { Authorization: JSON.stringify(kakaoAccessToken) },
+    //   }
+    // );
+    return await axios.get('/data/optionInfo.json');
   };
 
   const {
