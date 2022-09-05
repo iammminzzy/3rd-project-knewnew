@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Header, ToBack } from '../Detail/Detail';
@@ -9,10 +9,10 @@ import { useQuery } from 'react-query';
 
 interface UserInfoProps {
   userInfo: {
-    user: string;
+    nickname: string;
+    access_token: string;
   };
 }
-
 interface OptionProps {
   style?: string;
   family?: string;
@@ -42,34 +42,39 @@ export default function OptionInfo({ userInfo }: UserInfoProps) {
       return;
     }
 
-    await axios
-      .post(
-        `api/`,
-        {},
-        {
-          params: inputValue,
-          //  headers: 토큰?
-        }
-      )
-      .then(res => {
-        if (res.status === 200) {
-          alert('뉴뉴에 오신 것을 환영합니다 (>_<)/');
-          navigate('/');
-        }
-      });
+    const res = await axios.patch(
+      'http://192.168.0.230:8000/user/introduction',
+      {
+        introduction_tags: [
+          {
+            style: inputValue.style,
+            family: inputValue.family,
+            occupation: inputValue.occupation,
+          },
+        ],
+      },
+      {
+        headers: { Authorization: `Bearer ${userInfo.access_token}` },
+      }
+    );
+
+    if (res.status === 200) {
+      alert('뉴뉴에 오신 것을 환영합니다 (>_<)/');
+      navigate('/');
+    }
   };
 
   console.log(inputValue);
 
-  // const postOptionInfo = useQuery('optionInfo', handleSubmit, {
-  //   onSuccess: () => {
-  //     alert('뉴뉴에 오신 것을 환영합니다 (>_<)/');
-  //     navigate('/');
-  //   },
-  //   enabled: false,
-  //   refetchOnWindowFocus: false,
-  //   retry: false,
-  // });
+  const { isLoading } = useQuery('optionInfo', handleSubmit, {
+    onSuccess: () => {
+      alert('뉴뉴에 오신 것을 환영합니다 (>_<)/');
+      navigate('/');
+    },
+    enabled: false,
+    refetchOnWindowFocus: false,
+    retry: false,
+  });
 
   return (
     <Container>
@@ -80,8 +85,8 @@ export default function OptionInfo({ userInfo }: UserInfoProps) {
       </NoBorderHeader>
       <OptionInfoWrap>
         <Greeting>
-          {/* <User>{userInfo.user}</User>님 반가워요! */}
-          <User>뉴뉴</User>님 반가워요!
+          <User>{userInfo.nickname}</User>님 반가워요!
+          {/* <User>뉴뉴</User>님 반가워요! */}
         </Greeting>
         <Bold>슬기로운 뉴뉴생활을 위해 나를 소개해주세요.</Bold>
         <Description>

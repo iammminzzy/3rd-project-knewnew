@@ -16,5 +16,6 @@
   "turboConsoleLog.addSemicolonInTheEnd": true,
   "turboConsoleLog.delimiterInsideMessage": "",
   "turboConsoleLog.logMessagePrefix": "",
-  "turboConsoleLog.logFunction": ""
+  "turboConsoleLog.logFunction": "",
+  "prettier.tabWidth": 4
 }
