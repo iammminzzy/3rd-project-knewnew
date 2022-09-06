@@ -40,8 +40,7 @@ function App() {
 
   useEffect(() => {
     // todo 화면들어올때마다 refreshToken 요청 api
-    const refreshToken = 'tokensdfasdfafad';
-    dispatch(addToken(refreshToken));
+    dispatch(addToken(token));
   }, []);
 
   return (

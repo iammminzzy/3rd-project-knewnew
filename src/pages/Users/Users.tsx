@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { useNavigate, Link } from 'react-router-dom';
+import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import { RiPencilFill } from 'react-icons/ri';
 import Loading from '../../components/Status/Loading';
 import Error from '../../components/Status/Error';
-import { useQuery } from 'react-query';
-import axios from 'axios';
+import { BASE_URL } from '../../api/utils';
 
 export default function Users() {
   const navigate = useNavigate();
@@ -30,7 +30,8 @@ export default function Users() {
   // }, []);
 
   const getUserInfo = () => {
-    return axios.get('/data/userInfo.json');
+    // return axios.get('/data/userInfo.json');
+    return axios.get(`${BASE_URL}/user/mypage`);
   };
 
   const {

@@ -1,14 +1,18 @@
 import React from 'react';
-import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { useQuery } from 'react-query';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { addToken, test, TokenType } from '../../reducer/userSlice';
 import OptionInfo from '../OptionInfo/OptionInfo';
 import Loading from '../../components/Status/Loading';
 import Error from '../../components/Status/Error';
-import { useDispatch } from 'react-redux';
-import { addToken } from '../../reducer/userSlice';
+import { BASE_URL } from '../../api/utils';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 export default function KakaoLogin() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
   const AUTHORIZE_CODE = searchParams.get('code');
@@ -34,14 +38,14 @@ export default function KakaoLogin() {
   const kakaoAccessToken = kakaoToken?.data.access_token;
 
   const getKakaoUserInfo = () => {
-    return axios.post(
-      'http://192.168.0.230:8000/user/login/kakao',
-      {},
-      {
-        headers: { Authorization: JSON.stringify(kakaoAccessToken) },
-      }
-    );
-    // return axios.get('/data/optionInfo.json');
+    // return axios.post(
+    //   `${BASE_URL}/user/login/kakao`,
+    //   {},
+    //   {
+    //     headers: { Authorization: JSON.stringify(kakaoAccessToken) },
+    //   }
+    // );
+    return axios.get('/data/loginInfo.json');
   };
 
   const {
@@ -57,6 +61,11 @@ export default function KakaoLogin() {
     retry: false,
   });
 
+  const refreshToken = useSelector(
+    (state: RootState) => state.tokenState.value
+  );
+  console.log('refresh token', refreshToken);
+
   if (kakaoTokenIsLoding || kakaoUserInfoIsLoding) {
     return <Loading />;
   }
@@ -64,10 +73,17 @@ export default function KakaoLogin() {
     return <Error />;
   }
 
-  console.log('kakaoUserInfo', kakaoUserInfo?.data);
+  console.log('~ kakaoUserInfo?.data', kakaoUserInfo?.data);
+  const isNew = kakaoUserInfo?.data.is_new;
 
-  if (kakaoUserInfo) {
+  if (isNew === true) {
     return <OptionInfo userInfo={kakaoUserInfo?.data} />;
+  } else if (isNew === false) {
+    alert('뉴뉴에 오신 것을 환영합니다 (>_<)/');
+    navigate('/');
+  } else {
+    alert('다시 시도해 주세요');
+    navigate('/signin');
   }
 
   return <div>KakaoLogin</div>;
