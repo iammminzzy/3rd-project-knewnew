@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { RiPencilFill } from 'react-icons/ri';
+import Loading from '../../components/Status/Loading';
+import Error from '../../components/Status/Error';
+import { useQuery } from 'react-query';
+import axios from 'axios';
 
 export default function Users() {
   const navigate = useNavigate();
@@ -23,27 +28,53 @@ export default function Users() {
   //     return;
   //   }
   // }, []);
+
+  const getUserInfo = () => {
+    return axios.get('/data/userInfo.json');
+  };
+
+  const {
+    data: userInfo,
+    isLoading: userInfoIsLoding,
+    isError: userInfoIsError,
+  } = useQuery('getUserInfo', getUserInfo, {
+    refetchOnWindowFocus: false,
+    retry: false,
+  });
+  console.log('~ userInfo', userInfo?.data);
+
+  if (userInfoIsLoding) {
+    return <Loading />;
+  }
+  if (userInfoIsError) {
+    return <Error />;
+  }
+
   return (
     <Container>
       <Back>
         <Content>
           <Wapper>
-            <UserInfo>
+            <Info>
               <Description>
                 <NickName>
-                  TEST#8096
-                  <Individuality>간단함파 1인가구 학생</Individuality>
+                  {userInfo?.data.nickname}
+                  <p>
+                    {userInfo?.data.introduction_tags.map(
+                      (tag: string, idx: number) => (
+                        <Individuality key={idx}>{tag}&nbsp;</Individuality>
+                      )
+                    )}
+                  </p>
                 </NickName>
               </Description>
               <Profile>
                 <ProfileImg
-                  src={
-                    'https://images.unsplash.com/photo-1660678473509-120139e9317b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=872&q=80'
-                  }
+                  src={userInfo?.data.profile_image}
                   alt="profileimg"
                 />
               </Profile>
-            </UserInfo>
+            </Info>
             <Form>
               <Input
                 type="text"
@@ -70,7 +101,7 @@ export default function Users() {
           {menuArr[currentTab].content.length >= 0 && (
             <NotPost>{menuArr[currentTab].name}이 없습니다.</NotPost>
           )}
-          <CreateButton type="button">작성하기</CreateButton>
+          <Create to="/newfeed">작성하기</Create>
         </PostList>
       </Back>
     </Container>
@@ -94,26 +125,27 @@ const Back = styled.div`
 const Content = styled.div`
   display: flex;
   position: relative;
-
   max-width: 768px;
   height: 28%;
   width: 100%;
-
+  margin-top: 64px;
   background-color: ${({ theme }) => theme.colors.white};
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 20px -20px rgba(0, 0, 0, 0.3);
 `;
 
 const Wapper = styled.div`
   display: flex;
   flex-direction: column;
-
-  gap: 15px;
-  margin: 0px 20px;
-
+  gap: 30px;
   width: 100%;
+  margin: 25px 20px;
+
+  @media (max-width: 767px) {
+    gap: 15px;
+  }
 `;
 
-const UserInfo = styled.div`
+const Info = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -130,32 +162,30 @@ const Profile = styled.div`
 const NickName = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
-
+  gap: 5px;
   font-size: 25px;
   font-weight: 800;
 `;
 
-const Individuality = styled.p`
+const Individuality = styled.span`
   font-size: 12px;
   font-weight: 400;
-
   color: ${({ theme }) => theme.colors.black50};
 `;
 
 const ProfileImg = styled.img`
-  width: 100px;
-  height: 100px;
+  width: 75px;
+  height: 75px;
   border-radius: 100%;
 
   @media (max-width: 767px) {
-    width: 100px;
-    height: 100px;
+    width: 75px;
+    height: 75px;
   }
 
   @media (max-width: 480px) {
-    width: 80px;
-    height: 80px;
+    width: 75px;
+    height: 75px;
   }
 `;
 
@@ -163,11 +193,13 @@ const Form = styled.form`
   width: 100%;
   padding: 10px;
   position: relative;
-
   border: 1px solid ${({ theme }) => theme.colors.red80};
   border-radius: 10px;
-
   opacity: 0.7;
+
+  @media (max-width: 480px) {
+    padding: 6px;
+  }
 `;
 
 const Input = styled.input``;
@@ -193,12 +225,11 @@ const Tab = styled.ul`
 
 const Menu = styled.li`
   width: 33%;
+  padding-bottom: 13px;
   border-bottom: 2px solid inherit;
-
   color: ${({ theme }) => theme.colors.black50};
   font-size: 14px;
   font-weight: 400;
-
   cursor: pointer;
 
   &.focused {
@@ -222,22 +253,24 @@ const NotPost = styled.span`
   bottom: 30%;
 `;
 
-const CreateButton = styled.button`
-  position: fixed;
+const Create = styled(Link)`
+  position: absolute;
   bottom: 20%;
-
   width: 80%;
   max-width: 500px;
   padding: 13px;
+  color: ${({ theme }) => theme.colors.red80};
   border: 1px solid ${({ theme }) => theme.colors.red80};
   border-radius: 5px;
-
+  background-color: ${({ theme }) => theme.colors.white};
   font-size: 16px;
   font-weight: 600;
-
-  color: ${({ theme }) => theme.colors.red80};
-  background-color: ${({ theme }) => theme.colors.white};
+  text-align: center;
+  opacity: 0.9;
   cursor: pointer;
 
-  opacity: 0.9;
+  &:hover {
+    background: ${({ theme }) => theme.colors.red};
+    color: ${({ theme }) => theme.colors.white};
+  }
 `;
