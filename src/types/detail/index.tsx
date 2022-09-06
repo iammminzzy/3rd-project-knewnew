@@ -21,6 +21,8 @@ export interface DetailType {
     profile_image: string;
     nickname: string;
     tags: string;
-    introduction_tags: [string];
+    introduction_tags: {
+      name: string;
+    };
   };
 }

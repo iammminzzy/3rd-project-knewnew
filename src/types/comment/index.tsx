@@ -1,18 +1,24 @@
 export interface CommentType {
-  comment_id: number;
-  comment_user_id: number;
-  comment_user_name: string;
-  comment_created_at: string;
-  comment_like_count: number;
-  comment_description: string;
-  in_comment: [
+  id: number;
+  created_at: string;
+  like_count: number;
+  description: string;
+  user: {
+    id: number;
+    nickname: string;
+    profile_image: string;
+  };
+  child_comments: [
     {
-      in_comment_id: number;
-      in_comment_user_id: number;
-      in_comment_user_name: string;
-      in_comment_created_at: string;
-      in_comment_like_count: number;
-      in_comment_description: string;
+      id: number;
+      created_at: string;
+      like_count: number;
+      description: string;
+      user: {
+        id: number;
+        nickname: string;
+        profile_image: string;
+      };
     }
   ];
 }

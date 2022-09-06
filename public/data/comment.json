@@ -1,0 +1,39 @@
+[
+  {
+    "id": 1,
+    "created_at": "2022-08-30T21:56:36.403581+09:00",
+    "like_count": 0,
+    "description": "감사원의 조직·직무범위·감사위원의 자격·감사대상공무원의 범위 기타 필요한 사항은 법률로 정한다.",
+    "user": {
+      "id": 1,
+      "nickname": "gyuchan",
+      "profile_image": "https://cdn.pixabay.com/photo/2022/08/18/09/20/houses-7394390_960_720.jpg"
+    },
+    "child_comments": []
+  },
+  {
+    "id": 3,
+    "created_at": "2022-08-30T21:59:45.286641+09:00",
+    "like_count": 0,
+    "description": "재산권의 행사는 공공복리에 적합하도록 하여야 한다. 제2항의 재판관중 3인은 국회에서 선출하는 자를, 3인은 대법원장이 지명하는 자를 임명한다.",
+    "user": {
+      "id": 2,
+      "nickname": "ahn",
+      "profile_image": "https://cdn.pixabay.com/photo/2022/08/18/09/20/houses-7394390_960_720.jpg"
+    },
+    "child_comments": [
+      {
+        "id": 5,
+        "created_at": "2022-08-29T21:59:45.286540+09:00",
+        "like_count": 0,
+        "description": "모든 국민은 신속한 재판을 받을 권리를 가진다. 형사피고인은 상당한 이유가 없는 한 지체없이 공개재판을 받을 권리를 가진다.",
+        "user": {
+          "id": 2,
+          "nickname": "ahn",
+          "profile_image": "https://cdn.pixabay.com/photo/2022/08/18/09/20/houses-7394390_960_720.jpg"
+        },
+        "child_comments": []
+      }
+    ]
+  }
+]

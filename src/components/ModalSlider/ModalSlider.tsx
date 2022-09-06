@@ -9,7 +9,7 @@ interface Props {
   img: [{ order: number; url: string }] | undefined;
 }
 
-function ImageDetail({ close, img }: Props) {
+function ModalSlider({ close, img }: Props) {
   const settings = {
     customPaging: function (i: number) {
       const imgSrc = img && img[i].url;
@@ -39,10 +39,11 @@ function ImageDetail({ close, img }: Props) {
   );
 }
 
-export default ImageDetail;
+export default ModalSlider;
 
 const Wapper = styled.div`
   position: fixed;
+  max-width: 768px;
   width: 100%;
   height: 100%;
   z-index: 1;
