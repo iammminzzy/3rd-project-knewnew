@@ -112,6 +112,7 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
+  margin-top: 60px;
 `;
 
 const Back = styled.div`
@@ -129,6 +130,7 @@ const Content = styled.div`
   height: 28%;
   width: 100%;
   margin-top: 64px;
+
   background-color: ${({ theme }) => theme.colors.white};
   box-shadow: 0 20px 20px -20px rgba(0, 0, 0, 0.3);
 `;

@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { IoIosArrowBack } from 'react-icons/io';
-import { AiOutlineSetting } from 'react-icons/ai';
+import { IoIosArrowBack, AiOutlineSetting } from '../../utils/common/icons';
 
 interface Iprops {
   userLocation: string;

@@ -14,6 +14,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addToken } from './reducer/userSlice';
 import { RootState } from './store/store';
 
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+
 function App() {
   const [modalOpen, setModalOpen] = useState(false);
   const token = useSelector((state: RootState) => state.tokenState.value);

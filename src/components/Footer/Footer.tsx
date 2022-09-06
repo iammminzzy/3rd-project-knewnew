@@ -9,14 +9,12 @@ import { FaUser } from 'react-icons/fa';
 
 const Footer = () => {
   const location = useLocation();
-
   if (
     location.pathname.includes('detail') ||
     location.pathname.includes('signin')
   ) {
     return null;
   }
-
   return (
     <Container>
       <Box>

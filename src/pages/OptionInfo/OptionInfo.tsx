@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { Header, ToBack } from '../Detail/Detail';
 import { IoIosArrowBack } from 'react-icons/io';
 import { AiOutlineCheck } from 'react-icons/ai';
 import axios from 'axios';
@@ -204,6 +203,47 @@ const Container = styled.div`
 
   @media (min-width: 768px) {
     width: 748px;
+  }
+`;
+
+export const Header = styled.div`
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 34px 0;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  font-size: 20px;
+  z-index: 10;
+
+  svg {
+    font-size: 30px;
+  }
+
+  @media (min-width: 768px) {
+    width: 748px;
+  }
+
+  @media (max-width: 767px) {
+    left: 10px;
+    right: 10px;
+    padding: 29px 0;
+    font-size: 16px;
+
+    svg {
+      font-size: 20px;
+    }
+  }
+`;
+
+export const ToBack = styled.div`
+  position: absolute;
+  left: 5px;
+
+  svg:hover {
+    cursor: pointer;
   }
 `;
 

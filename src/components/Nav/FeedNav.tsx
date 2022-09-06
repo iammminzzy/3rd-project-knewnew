@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { BsBell } from 'react-icons/bs';
-import { useEffect, useState } from 'react';
+import { BsBell } from '../../utils/common/icons';
 
 const FeedNav = () => {
   const [scrollY, setScrollY] = useState(0);
