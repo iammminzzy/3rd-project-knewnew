@@ -1,3 +1,6 @@
 {
-  "recommendations": ["styled-components.vscode-styled-components"]
+  "recommendations": [
+    "chakrounanas.turbo-console-log",
+    "ChakrounAnas.turbo-console-log"
+  ]
 }
