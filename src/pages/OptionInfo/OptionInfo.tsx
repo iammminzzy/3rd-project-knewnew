@@ -5,7 +5,9 @@ import { Header, ToBack } from '../Detail/Detail';
 import { IoIosArrowBack } from 'react-icons/io';
 import { AiOutlineCheck } from 'react-icons/ai';
 import axios from 'axios';
-import { useQuery } from 'react-query';
+import { useMutation } from 'react-query';
+import Loading from '../../components/Status/Loading';
+import Error from '../../components/Status/Error';
 
 interface UserInfoProps {
   userInfo: {
@@ -35,46 +37,48 @@ export default function OptionInfo({ userInfo }: UserInfoProps) {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  console.log(inputValue);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (Object.values(inputValue).includes('')) {
+    if (inputValue.occupation == '') {
       alert('직업을 입력해 주세요!');
       return;
     }
 
-    const res = await axios.patch(
+    mutate();
+  };
+
+  const setOptionInfo = () => {
+    return axios.post(
       'http://192.168.0.230:8000/user/introduction',
       {
         introduction_tags: [
-          {
-            style: inputValue.style,
-            family: inputValue.family,
-            occupation: inputValue.occupation,
-          },
+          inputValue.style,
+          inputValue.family,
+          inputValue.occupation,
         ],
       },
       {
         headers: { Authorization: `Bearer ${userInfo.access_token}` },
       }
     );
-
-    if (res.status === 200) {
-      alert('뉴뉴에 오신 것을 환영합니다 (>_<)/');
-      navigate('/');
-    }
   };
 
-  console.log(inputValue);
-
-  const { isLoading } = useQuery('optionInfo', handleSubmit, {
+  const { isLoading, isError, mutate } = useMutation(setOptionInfo, {
     onSuccess: () => {
       alert('뉴뉴에 오신 것을 환영합니다 (>_<)/');
       navigate('/');
     },
-    enabled: false,
-    refetchOnWindowFocus: false,
     retry: false,
   });
+
+  if (isLoading) {
+    return <Loading />;
+  }
+  if (isError) {
+    return <Error />;
+  }
 
   return (
     <Container>
