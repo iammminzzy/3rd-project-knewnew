@@ -4,11 +4,9 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Footer from './components/Footer/Footer';
 import Nav from './components/Nav/Nav';
 
-// import Home from './pages/Home/Home';
 import NewFeed from './pages/NewFeed/NewFeed';
 import Search from './pages/Search/Search';
 import Users from './pages/Users/Users';
-// import Detail from './pages/Detail/Detail';
 import NotFound from './pages/NotFound/NotFound';
 import ItemList from './pages/ItemList/ItemList';
 import SignIn from './pages/SignIn/SignIn';
