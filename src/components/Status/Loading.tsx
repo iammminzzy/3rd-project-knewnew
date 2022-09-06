@@ -2,13 +2,22 @@ import React from 'react';
 import styled from 'styled-components';
 
 export default function Loading() {
-  return <Status>Loading </Status>;
+  return (
+    <LoadingWrap>
+      <LoadingImg src="/images/loading.gif" alt="Loading" />
+    </LoadingWrap>
+  );
 }
 
-const Status = styled.div`
+const LoadingWrap = styled.div`
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 70px;
+`;
+
+const LoadingImg = styled.img`
+  display: inline-block;
+  width: 20%;
+  height: auto;
 `;

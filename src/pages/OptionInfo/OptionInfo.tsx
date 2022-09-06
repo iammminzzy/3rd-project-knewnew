@@ -4,18 +4,32 @@ import styled from 'styled-components';
 import { Header, ToBack } from '../Detail/Detail';
 import { IoIosArrowBack } from 'react-icons/io';
 import { AiOutlineCheck } from 'react-icons/ai';
+import axios from 'axios';
+import { useMutation } from 'react-query';
+import Loading from '../../components/Status/Loading';
+import Error from '../../components/Status/Error';
 
 interface UserInfoProps {
-  userInfo: { user: string };
+  userInfo: {
+    nickname: string;
+    access_token: string;
+  };
+}
+interface OptionProps {
+  style?: string;
+  family?: string;
+  occupation?: string;
 }
 
 export default function OptionInfo({ userInfo }: UserInfoProps) {
   const navigate = useNavigate();
-  const [inputValue, setInputValue] = useState({});
-  const isDisabled = Object.keys(inputValue).length === 3;
+  const [enabled, setEnabled] = useState(false);
+  const [etcValue, setEtcValue] = useState<string>('');
+  const [inputValue, setInputValue] = useState<OptionProps>({});
+  const isDisabled = Object.keys(inputValue).length !== OPTION_DATA.length;
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, name } = e.target;
+    const { name, value } = e.target;
 
     setInputValue({
       ...inputValue,
@@ -23,13 +37,48 @@ export default function OptionInfo({ userInfo }: UserInfoProps) {
     });
   };
 
-  const handleSubmit = () => {
-    // axios.post(`api`, inputValue).then(res => console.log(res));
-    alert('뉴뉴에 오신 것을 환영합니다 (>_<)/');
-    navigate('/');
+  console.log(inputValue);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (inputValue.occupation == '') {
+      alert('직업을 입력해 주세요!');
+      return;
+    }
+
+    mutate();
   };
 
-  console.log(inputValue);
+  const setOptionInfo = () => {
+    return axios.post(
+      'http://192.168.0.230:8000/user/introduction',
+      {
+        introduction_tags: [
+          inputValue.style,
+          inputValue.family,
+          inputValue.occupation,
+        ],
+      },
+      {
+        headers: { Authorization: `Bearer ${userInfo.access_token}` },
+      }
+    );
+  };
+
+  const { isLoading, isError, mutate } = useMutation(setOptionInfo, {
+    onSuccess: () => {
+      alert('뉴뉴에 오신 것을 환영합니다 (>_<)/');
+      navigate('/');
+    },
+    retry: false,
+  });
+
+  if (isLoading) {
+    return <Loading />;
+  }
+  if (isError) {
+    return <Error />;
+  }
 
   return (
     <Container>
@@ -40,8 +89,8 @@ export default function OptionInfo({ userInfo }: UserInfoProps) {
       </NoBorderHeader>
       <OptionInfoWrap>
         <Greeting>
-          {/* <User>{userInfo.user}</User>님 반가워요! */}
-          <User>뉴뉴</User>님 반가워요!
+          <User>{userInfo.nickname}</User>님 반가워요!
+          {/* <User>뉴뉴</User>님 반가워요! */}
         </Greeting>
         <Bold>슬기로운 뉴뉴생활을 위해 나를 소개해주세요.</Bold>
         <Description>
@@ -67,18 +116,37 @@ export default function OptionInfo({ userInfo }: UserInfoProps) {
                                 name={name}
                                 value={choice}
                                 onChange={handleInput}
+                                onFocus={() => setEnabled(false)}
                               />
                               <label>{choice}</label>
                             </>
                           ) : (
                             <>
-                              <RadioInput type="radio" name={name} value="" />
-                              <label>{choice}</label>
+                              <RadioInput
+                                type="radio"
+                                name="occupation"
+                                onFocus={() => {
+                                  setEnabled(true);
+                                  setInputValue({
+                                    ...inputValue,
+                                    occupation: etcValue,
+                                  });
+                                }}
+                              />
+                              <label>기타</label>
                               <EtcInput
                                 type="text"
                                 name="occupation"
+                                value={etcValue}
                                 placeholder="직접 입력해주세요"
-                                onChange={handleInput}
+                                onChange={e => {
+                                  setEtcValue(e.target.value);
+                                  setInputValue({
+                                    ...inputValue,
+                                    occupation: e.target.value,
+                                  });
+                                }}
+                                disabled={!enabled}
                               />
                             </>
                           )}
@@ -96,7 +164,7 @@ export default function OptionInfo({ userInfo }: UserInfoProps) {
               </OptionBox>
             );
           })}
-          <NextButton disabled={!isDisabled}>다음으로</NextButton>
+          <NextButton disabled={isDisabled}>다음으로</NextButton>
         </OptionForm>
       </OptionInfoWrap>
     </Container>

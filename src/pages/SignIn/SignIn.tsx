@@ -32,7 +32,12 @@ export default function SignIn() {
           <InputForm>
             <Input type="email" placeholder="이메일" />
             <Input type="password" placeholder="비밀번호" />
-            <SignInButton type="submit">로그인</SignInButton>
+            <SignInButton
+              type="button"
+              onClick={() => alert('카카오 / 네이버로 로그인해 주세요')}
+            >
+              로그인
+            </SignInButton>
           </InputForm>
         </InputContainer>
         <Section>또는</Section>
