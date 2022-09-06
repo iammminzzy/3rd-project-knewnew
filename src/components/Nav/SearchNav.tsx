@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { IoIosArrowBack } from 'react-icons/io';
-import { AiOutlineSearch } from 'react-icons/ai';
-
-// import { useSearch } from '../../hooks/useSearch';
-// const search = useSearch('')
+import { IoIosArrowBack, AiOutlineSearch } from '../../utils/common/icons';
 
 const SearchNav = () => {
   const navigate = useNavigate();
