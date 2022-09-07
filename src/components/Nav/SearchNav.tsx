@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { IoIosArrowBack } from 'react-icons/io';
-import { AiOutlineSearch } from 'react-icons/ai';
-
-// import { useSearch } from '../../hooks/useSearch';
-// const search = useSearch('')
+import { IoIosArrowBack, AiOutlineSearch } from '../../utils/common/icons';
 
 const SearchNav = () => {
   const navigate = useNavigate();
@@ -83,6 +79,7 @@ const Arrow = styled(IoIosArrowBack)`
   position: absolute;
   left: 5%;
   font-size: 20px;
+  cursor: pointer;
 `;
 
 const SearchForm = styled.form`

@@ -15,6 +15,9 @@ const Nav = () => {
     if (userLocation.includes('/search')) {
       return <SearchNav />;
     }
+    if (userLocation.includes('/signin')) {
+      return null;
+    }
     return <EtcNav userLocation={userLocation} />;
   };
 
