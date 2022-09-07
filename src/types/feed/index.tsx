@@ -14,9 +14,3 @@ export interface GetDetailQueryType extends GetFeedQueryType {
   timeBefore: number;
   store?: string;
 }
-
-export interface OptionProps {
-  style: string | undefined;
-  family: string | undefined;
-  occupation: string | undefined;
-}

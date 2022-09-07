@@ -1,26 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import { IoIosArrowBack } from 'react-icons/io';
-import { AiOutlineCheck } from 'react-icons/ai';
-import axios from 'axios';
 import { useMutation } from 'react-query';
+import axios from 'axios';
+import styled from 'styled-components';
 import Loading from '../../components/Status/Loading';
 import Error from '../../components/Status/Error';
+import { UserInfoProps } from '../../types/login/index';
+import { OptionProps } from '../../types/optionInfo/index';
+import { BASE_URL } from '../../api/utils';
+import { IoIosArrowBack } from 'react-icons/io';
+import { AiOutlineCheck } from 'react-icons/ai';
 
-interface UserInfoProps {
-  userInfo: {
-    nickname: string;
-    access_token: string;
-  };
-}
-interface OptionProps {
-  style?: string;
-  family?: string;
-  occupation?: string;
-}
-
-export default function OptionInfo({ userInfo }: UserInfoProps) {
+export default function OptionInfo({ userInfo }: { userInfo: UserInfoProps }) {
   const navigate = useNavigate();
   const [enabled, setEnabled] = useState(false);
   const [etcValue, setEtcValue] = useState<string>('');
@@ -36,8 +27,6 @@ export default function OptionInfo({ userInfo }: UserInfoProps) {
     });
   };
 
-  console.log(inputValue);
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (inputValue.occupation == '') {
@@ -50,7 +39,7 @@ export default function OptionInfo({ userInfo }: UserInfoProps) {
 
   const setOptionInfo = () => {
     return axios.post(
-      'http://192.168.0.230:8000/user/introduction',
+      `${BASE_URL}/user/introduction`,
       {
         introduction_tags: [
           inputValue.style,
@@ -89,7 +78,6 @@ export default function OptionInfo({ userInfo }: UserInfoProps) {
       <OptionInfoWrap>
         <Greeting>
           <User>{userInfo.nickname}</User>님 반가워요!
-          {/* <User>뉴뉴</User>님 반가워요! */}
         </Greeting>
         <Bold>슬기로운 뉴뉴생활을 위해 나를 소개해주세요.</Bold>
         <Description>

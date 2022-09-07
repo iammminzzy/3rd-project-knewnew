@@ -59,6 +59,7 @@ const Arrow = styled(IoIosArrowBack)`
   position: absolute;
   left: 5%;
   font-size: 20px;
+  cursor: pointer;
 `;
 
 const Title = styled.p`
