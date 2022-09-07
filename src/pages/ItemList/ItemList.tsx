@@ -8,8 +8,7 @@ import { getFeed } from '../../api';
 import { GetFeedQueryType } from '../../types/feed';
 import Loading from '../../components/Status/Loading';
 import Error from '../../components/Status/Error';
-
-const BASE_URL = 'http://192.168.0.248:8000';
+import { BASE_URL } from '../../api/utils';
 
 const fetchPostList = async (pageParam: number) => {
   const res = await axios.get(`${BASE_URL}/review/?page=${pageParam}`);
@@ -60,7 +59,7 @@ export default ItemList;
 
 const ItemListWrap = styled.div`
   position: relative;
-  margin: 120px auto;
+  margin: 90px auto;
 
   font-family: ${({ theme }) => theme.fonts.fontFamily};
   white-space: pre-wrap;
@@ -70,7 +69,7 @@ const ItemListWrap = styled.div`
   }
 
   @media (max-width: 767px) {
-    margin: 120px 10px;
+    margin: 90px 10px;
   }
 `;
 

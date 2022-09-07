@@ -1,31 +1,29 @@
 import axios from 'axios';
 import { BASE_URL } from './utils';
-const LOCAL_TEST = 'http://192.168.0.226:8000/review/1/comment/';
-const POST_URL = 'http://192.168.0.226:8000/review/1/comment/';
-const ACCESS_TOKEN =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjYyMzYzNjc0LCJpYXQiOjE2NjIzNjE4NzQsImp0aSI6ImQ4ZGQ3MzgyZDQxYzRjZDY4ZDAyOThiZmZlYmFmZDBiIiwidXNlcl9pZCI6MX0.ed7s8DlCvZr6rm-x-XdgcXm-5Ta48bppNmZ6A_cJiF0';
 
-export const getComment = async () => {
-  const { data } = await axios.get(`${BASE_URL}/data/comment.json`);
-  // const { data } = await axios.get(LOCAL_TEST, {
-  //   headers: {
-  //     Authorization: `Bearer ${ACCESS_TOKEN}`,
-  //   },
-  // });
-  if (data) {
-    console.log(data);
-    return data;
+export const getComment = async (id: string | undefined) => {
+  const { data } = await axios.get(`${BASE_URL}/review/${id}/comment/`);
+  if (data.results) {
+    return data.results;
   }
 };
 
-export const postComment = async () => {
-  const response = await axios.post(
-    POST_URL,
+export const postComment = async (
+  ACCESS_TOKEN: string,
+  id: string | undefined,
+  parent_comment: number | null,
+  description: string
+) => {
+  if (parent_comment === 0) {
+    parent_comment = null;
+  }
+  const { status } = await axios.post(
+    `${BASE_URL}/review/${id}/comment/`,
     {
-      review: 1,
-      parent_comment: 1,
+      review: id,
+      parent_comment,
       like_count: 0,
-      description: 'test',
+      description,
     },
     {
       headers: {
@@ -33,4 +31,9 @@ export const postComment = async () => {
       },
     }
   );
+  if (status === 201) {
+    const result = await getComment(id);
+    return result;
+  }
+  return 'error';
 };

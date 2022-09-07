@@ -6,62 +6,86 @@ import getDate from '../../utils/common/getDate';
 
 interface Props {
   data: CommentType[];
+  reComment: { ninkname: string; id: number };
   inputValue: string;
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleCancel: (event: React.MouseEvent<HTMLButtonElement>) => void;
   handleAddComment: (event: React.FormEvent<HTMLFormElement>) => void;
+  handleReComment: (ninkname: string, id: number) => void;
 }
 
 const CommentPresenter = ({
   data,
+  reComment,
   inputValue,
   handleChange,
   handleCancel,
   handleAddComment,
+  handleReComment,
 }: Props) => {
   return (
-    <>
+    <Containar>
       <CommentWrap>
         <CommentTotal>작성된 댓글 개</CommentTotal>
         <CommentList>
-          {data.map(comment => (
-            <div key={comment.id + comment.created_at}>
-              <CommentWapper>
-                <ProfileImg src={comment.user.profile_image} alt="" />
-                <ProfileInfo>
-                  <ProfileBox>
-                    <Nickname>{comment.user.nickname}</Nickname>
-                    <div>{getDate(comment.created_at)}</div>
-                  </ProfileBox>
-                  <Comment>{comment.description}</Comment>
-                  <CommentButton>
-                    <ReComment>답글달기</ReComment>
-                    <LikeButton>좋아요</LikeButton>
-                  </CommentButton>
-                </ProfileInfo>
-              </CommentWapper>
-              {comment.child_comments.map(reComment => (
-                <div key={reComment.id + reComment.created_at}>
-                  <ReCommentWapper>
-                    <ProfileImg src={reComment.user.profile_image} alt="" />
-                    <ProfileInfo>
-                      <ProfileBox>
-                        <Nickname>{reComment.user.nickname}</Nickname>
-                        <div>{getDate(reComment.created_at)}</div>
-                      </ProfileBox>
-                      <Comment>{reComment.description}</Comment>
-                      <CommentButton>
-                        <LikeButton>좋아요</LikeButton>
-                      </CommentButton>
-                    </ProfileInfo>
-                  </ReCommentWapper>
-                </div>
-              ))}
-            </div>
-          ))}
+          {data &&
+            data.map(comment => (
+              <div key={comment.id + comment.created_at}>
+                <CommentWapper>
+                  <ProfileImg src={comment.user.profile_image} alt="" />
+                  <ProfileInfo>
+                    <ProfileBox>
+                      <Nickname>{comment.user.nickname}</Nickname>
+                      <div>{getDate(comment.created_at)}</div>
+                    </ProfileBox>
+                    <Comment>{comment.description}</Comment>
+                    <CommentButton>
+                      <ReComment
+                        onClick={() =>
+                          handleReComment(comment.user.nickname, comment.id)
+                        }
+                      >
+                        답글달기
+                      </ReComment>
+                      <LikeButton>좋아요</LikeButton>
+                    </CommentButton>
+                  </ProfileInfo>
+                </CommentWapper>
+                {comment.child_comments.map(reComment => (
+                  <div key={reComment.id + reComment.created_at}>
+                    <ReCommentWapper>
+                      <ProfileImg src={reComment.user.profile_image} alt="" />
+                      <ProfileInfo>
+                        <ProfileBox>
+                          <Nickname>{reComment.user.nickname}</Nickname>
+                          <div>{getDate(reComment.created_at)}</div>
+                        </ProfileBox>
+                        <Comment>
+                          <span>@{comment.user.nickname} </span>
+                          {reComment.description}
+                        </Comment>
+                        <CommentButton>
+                          <LikeButton>좋아요</LikeButton>
+                        </CommentButton>
+                      </ProfileInfo>
+                    </ReCommentWapper>
+                  </div>
+                ))}
+              </div>
+            ))}
         </CommentList>
       </CommentWrap>
       <CommentInputWrap>
+        {data && reComment.ninkname.length > 0 && (
+          <ReCommentBox>
+            <ReCommentText>
+              {reComment.ninkname}님에게 답글을 남기는 중
+            </ReCommentText>
+            <ReCommentButton type="button" onClick={handleCancel}>
+              취소
+            </ReCommentButton>
+          </ReCommentBox>
+        )}
         <form onSubmit={handleAddComment}>
           <CommentInput
             type="text"
@@ -81,11 +105,13 @@ const CommentPresenter = ({
           </div>
         </form>
       </CommentInputWrap>
-    </>
+    </Containar>
   );
 };
 
 export default CommentPresenter;
+
+const Containar = styled.div``;
 
 const CommentWrap = styled.div`
   position: relative;
@@ -121,11 +147,11 @@ const CommentList = styled.div`
 `;
 
 const CommentInputWrap = styled.div`
-  position: fixed;
+  position: sticky;
   bottom: 0;
-  width: 100%;
+  margin: 0 auto;
+  max-height: 40px;
 
-  padding: 10px;
   background-color: #fff;
   border-top: 1px solid #ddd;
 
@@ -136,6 +162,9 @@ const CommentInputWrap = styled.div`
 
   @media (min-width: 768px) {
     width: 748px;
+  }
+  form {
+    padding: 10px;
   }
 `;
 
@@ -202,6 +231,10 @@ const Comment = styled.span`
   font-size: 14px;
   color: ${({ theme }) => theme.colors.black80};
   opacity: 0.8;
+  span {
+    color: ${({ theme }) => theme.colors.red};
+    font-weight: 600;
+  }
 `;
 
 const CommentButton = styled.div`
@@ -264,4 +297,27 @@ const ProfileBox = styled.div`
     font-size: 13px;
     opacity: 0.6;
   }
+`;
+
+const ReCommentBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  top: -37px;
+  padding: 10px;
+  width: 100%;
+  background-color: ${({ theme }) => theme.colors.white80};
+  border-bottom: 1px solid #ddd;
+`;
+
+const ReCommentText = styled.span`
+  font-size: 14px;
+  font-weight: 400;
+  color: ${({ theme }) => theme.colors.black50};
+  opacity: 0.9;
+`;
+
+const ReCommentButton = styled(CommentBtn)`
+  color: ${({ theme }) => theme.colors.black50};
+  opacity: 0.9;
 `;
