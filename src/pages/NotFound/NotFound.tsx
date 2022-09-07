@@ -1,8 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { RootState } from '../../store/store';
 
 export default function NotFound() {
+  const navigate = useNavigate();
+  const accessToken = useSelector((state: RootState) => state.tokenState.value);
+
+  useEffect(() => {
+    if (!accessToken) {
+      alert('로그인 후 사용해 주세요!');
+      navigate('/signin');
+    }
+  }, []);
+
   return (
     <Container>
       <Content>

@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from 'react-query';
+import axios from 'axios';
 import styled from 'styled-components';
-import { IoIosArrowBack } from 'react-icons/io';
-import { AiOutlineCheck } from 'react-icons/ai';
 import Loading from '../../components/Status/Loading';
 import Error from '../../components/Status/Error';
-import { UserInfoProps } from '../../types/optionInfo/index';
+import { UserInfoProps } from '../../types/login/index';
 import { OptionProps } from '../../types/optionInfo/index';
 import { BASE_URL } from '../../api/utils';
+import { IoIosArrowBack } from 'react-icons/io';
+import { AiOutlineCheck } from 'react-icons/ai';
 
-export default function OptionInfo({ userInfo }: UserInfoProps) {
+export default function OptionInfo({ userInfo }: { userInfo: UserInfoProps }) {
   const navigate = useNavigate();
   const [enabled, setEnabled] = useState(false);
   const [etcValue, setEtcValue] = useState<string>('');
@@ -26,8 +26,6 @@ export default function OptionInfo({ userInfo }: UserInfoProps) {
       [name]: value,
     });
   };
-
-  console.log(inputValue);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

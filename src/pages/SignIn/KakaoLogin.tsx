@@ -3,13 +3,12 @@ import axios from 'axios';
 import { useQuery } from 'react-query';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { addToken, test, TokenType } from '../../reducer/userSlice';
+import { addToken } from '../../reducer/userSlice';
 import OptionInfo from '../OptionInfo/OptionInfo';
 import Loading from '../../components/Status/Loading';
 import Error from '../../components/Status/Error';
 import { BASE_URL } from '../../api/utils';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
+import { UserInfoProps } from '../../types/login/index';
 
 export default function KakaoLogin() {
   const navigate = useNavigate();
@@ -36,16 +35,14 @@ export default function KakaoLogin() {
 
   //사용자 정보 받기(from BackEnd)
   const kakaoAccessToken = kakaoToken?.data.access_token;
-
   const getKakaoUserInfo = () => {
-    // return axios.post(
-    //   `${BASE_URL}/user/login/kakao`,
-    //   {},
-    //   {
-    //     headers: { Authorization: JSON.stringify(kakaoAccessToken) },
-    //   }
-    // );
-    return axios.get('/data/loginInfo.json');
+    return axios.post(
+      `${BASE_URL}/user/login/kakao`,
+      {},
+      {
+        headers: { Authorization: kakaoAccessToken },
+      }
+    );
   };
 
   const {
@@ -53,18 +50,32 @@ export default function KakaoLogin() {
     isLoading: kakaoUserInfoIsLoding,
     isError: kakaoUserInfoIsError,
   } = useQuery('getKakaoUserInfo', getKakaoUserInfo, {
-    onSuccess: kakao => {
-      dispatch(addToken(kakao.data.refresh_token));
-    },
+    onSuccess: kakao => setToken(kakao.data),
     enabled: !!kakaoToken,
     refetchOnWindowFocus: false,
-    retry: false,
   });
 
-  const refreshToken = useSelector(
-    (state: RootState) => state.tokenState.value
-  );
-  console.log('refresh token', refreshToken);
+  // Token setting
+  const setToken = (userInfo: UserInfoProps) => {
+    // 1. access : 전역에
+    dispatch(addToken(userInfo.access_token));
+
+    // 2. refresh : localStorage에
+    localStorage.setItem('refresh_token', userInfo.refresh_token);
+
+    // 토큰 만료 1분 전, 로그인 연장
+    const ACCESS_TOKEN_EXPIRRY_TIME = 0.5 * 3600 * 1000; // 유효기간:30분
+    setTimeout(setRefreshToken, ACCESS_TOKEN_EXPIRRY_TIME - 60 * 1000);
+  };
+
+  const setRefreshToken = async () => {
+    const { data } = await axios.post(`${BASE_URL}/user/refresh`, {
+      refresh_token: `${localStorage.getItem('refresh_token')}`,
+    });
+
+    dispatch(addToken(data.access));
+    localStorage.setItem('refresh_token', data.refresh);
+  };
 
   if (kakaoTokenIsLoding || kakaoUserInfoIsLoding) {
     return <Loading />;
@@ -73,7 +84,6 @@ export default function KakaoLogin() {
     return <Error />;
   }
 
-  console.log('~ kakaoUserInfo?.data', kakaoUserInfo?.data);
   const isNew = kakaoUserInfo?.data.is_new;
 
   if (isNew === true) {

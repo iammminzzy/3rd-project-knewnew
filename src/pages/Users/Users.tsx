@@ -7,8 +7,11 @@ import { RiPencilFill } from 'react-icons/ri';
 import Loading from '../../components/Status/Loading';
 import Error from '../../components/Status/Error';
 import { BASE_URL } from '../../api/utils';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 export default function Users() {
+  const accessToken = useSelector((state: RootState) => state.tokenState.value);
   const navigate = useNavigate();
   const [currentTab, setCurrentTab] = useState(0);
   const menuArr = [
@@ -21,17 +24,11 @@ export default function Users() {
     setCurrentTab(index);
   };
 
-  // useEffect(() => {
-  //   const isLogged = localStorage.getItem('isLogged');
-  //   if (!isLogged) {
-  //     navigate('/signin');
-  //     return;
-  //   }
-  // }, []);
-
   const getUserInfo = () => {
     // return axios.get('/data/userInfo.json');
-    return axios.get(`${BASE_URL}/user/mypage`);
+    return axios.get(`${BASE_URL}/user/mypage`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
   };
 
   const {
@@ -42,7 +39,13 @@ export default function Users() {
     refetchOnWindowFocus: false,
     retry: false,
   });
-  console.log('~ userInfo', userInfo?.data);
+
+  useEffect(() => {
+    if (!accessToken) {
+      alert('로그인해 주세요!');
+      navigate('/signin');
+    }
+  }, []);
 
   if (userInfoIsLoding) {
     return <Loading />;
@@ -130,7 +133,6 @@ const Content = styled.div`
   max-width: 768px;
   height: 28%;
   width: 100%;
-  margin-top: 64px;
 
   background-color: ${({ theme }) => theme.colors.white};
   box-shadow: 0 20px 20px -20px rgba(0, 0, 0, 0.3);
@@ -252,7 +254,7 @@ const PostList = styled.div`
 const NotPost = styled.span`
   color: ${({ theme }) => theme.colors.black50};
   font-weight: 500;
-  position: fixed;
+  position: absolute;
   bottom: 30%;
 `;
 

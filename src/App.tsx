@@ -1,26 +1,27 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
+import { Router } from './Router';
+import axios from 'axios';
 import {
   MutationCache,
   QueryCache,
   QueryClient,
   QueryClientProvider,
 } from 'react-query';
+import { useDispatch } from 'react-redux';
+import { addToken } from './reducer/userSlice';
 import { ThemeProvider } from 'styled-components';
-import { Router } from './Router';
 import GlobalStyle from './styles/GlobalStyle';
 import theme from './styles/theme';
 import Modal from '../src/components/Modal/Modal';
-import { useDispatch, useSelector } from 'react-redux';
-import { addToken } from './reducer/userSlice';
-import { RootState } from './store/store';
-
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { BASE_URL } from './api/utils';
 
 function App() {
   const [modalOpen, setModalOpen] = useState(false);
-  const token = useSelector((state: RootState) => state.tokenState.value);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const closeModal = (): void => {
     setModalOpen(false);
   };
@@ -38,9 +39,26 @@ function App() {
     }),
   });
 
+  const setTokenRefresh = async () => {
+    try {
+      const { data } = await axios.post(`${BASE_URL}/user/refresh`, {
+        refresh_token: `${localStorage.getItem('refresh_token')}`,
+      });
+      if (data) {
+        dispatch(addToken(data.access));
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        if (JSON.stringify(error.response.data) === 'token invaild') {
+          navigate('/signin');
+        }
+      }
+    }
+  };
+
   useEffect(() => {
     // todo 화면들어올때마다 refreshToken 요청 api
-    dispatch(addToken(token));
+    setTokenRefresh();
   }, []);
 
   return (
