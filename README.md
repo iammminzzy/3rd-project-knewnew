@@ -79,7 +79,7 @@
 
 ## 시연 영상
 
-[🍭뉴뉴 (Knewnew)](http://www.youtube.com/)
+[🍭뉴뉴 (Knewnew)](https://youtu.be/T7NdgYqNdog)
 
 ### 메인(=리스트) 페이지
 - 비로그인 사용자도 조회는 가능하나 수정, 삭제 등의 조작은 로그인 사용자만 가능하도록 구현 
