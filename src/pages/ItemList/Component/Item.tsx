@@ -11,12 +11,12 @@ import {
 } from 'react-icons/fi';
 import { BiComment } from 'react-icons/bi';
 
-function Item({ item }: { item: any }) {
+function Item({ item }: { item: GetFeedQueryType }) {
   const navigate = useNavigate();
   return (
     <ItemWrap
       onClick={() => {
-        navigate('/detail/1');
+        navigate(`/detail/${item.id}`);
       }}
     >
       <UserWrap>
@@ -25,7 +25,7 @@ function Item({ item }: { item: any }) {
             src={
               item.user.profile_image != (undefined || null)
                 ? item.user.profile_image
-                : 'https://images.unsplash.com/photo-1660678473509-120139e9317b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=872&q=80'
+                : '/images/icon.webp'
             }
             alt=""
           />
@@ -52,11 +52,14 @@ function Item({ item }: { item: any }) {
           <MainText>{item.description}</MainText>
         </MainTextWrap>
         <ImgListWrap>
-          {item.images
+          {item.images.length
             ? item.images
-                .concat({ id: -1, url: '' }, { id: -2, url: '' })
+                .concat(
+                  { id: -1, order: 0, url: '', review: 0 },
+                  { id: -2, order: 0, url: '', review: 0 }
+                )
                 .slice(0, 3)
-                .map((image: any) => {
+                .map(image => {
                   return (
                     <ImgWrap key={image.id} isMorePicture={item.images.length}>
                       <div>
@@ -87,10 +90,67 @@ function Item({ item }: { item: any }) {
           </div>
         </IconWrap>
       </Article>
+      {item.parent_review && (
+        <ParentWrap>
+          <UserProfileWrap>
+            <ProfileImg
+              src={
+                item.parent_review.user.profile_image != (undefined || null)
+                  ? item.parent_review.user.profile_image
+                  : '/images/icon.webp'
+              }
+              alt=""
+            />
+            <Nickname>{item.parent_review.user.nickname}</Nickname>
+            <ProfileTag>· {item.parent_review.user.tag}</ProfileTag>
+          </UserProfileWrap>
+          <Article>
+            {item.parent_review.reaction.id === 1 ? (
+              <Best>♥ 최고예요</Best>
+            ) : item.parent_review.reaction.id === 2 ? (
+              <Soso>● 괜찮아요</Soso>
+            ) : item.parent_review.reaction.id === 3 ? (
+              <Bad>Ⅹ 별로예요</Bad>
+            ) : (
+              <Question>? 궁금해요</Question>
+            )}
+            {item.parent_review.product.name && (
+              <ProductLink>{item.parent_review.product.name} 〉</ProductLink>
+            )}
+            <MainTextWrap>
+              <MainText>{item.parent_review.description}</MainText>
+            </MainTextWrap>
+            <ImgListWrap>
+              {item.parent_review.images.length
+                ? item.parent_review.images
+                    .concat(
+                      { id: -1, order: 0, url: '', review: 0 },
+                      { id: -2, order: 0, url: '', review: 0 }
+                    )
+                    .slice(0, 3)
+                    .map(image => {
+                      return (
+                        <ImgWrap
+                          key={image.id}
+                          isMorePicture={item.parent_review.images.length}
+                        >
+                          <div>
+                            <FiMoreHorizontal />
+                          </div>
+                          {image.url && (
+                            <UserUploadImg src={image.url} alt="" />
+                          )}
+                        </ImgWrap>
+                      );
+                    })
+                : null}
+            </ImgListWrap>
+          </Article>
+        </ParentWrap>
+      )}
     </ItemWrap>
   );
 }
-
 export default Item;
 
 const ItemWrap = styled.li`
@@ -358,4 +418,15 @@ const IconWrap = styled.div`
       font-size: 16px;
     }
   }
+`;
+
+const ParentWrap = styled.div`
+  margin-left: 30px;
+  margin-top: 15px;
+  padding-top: 20px;
+  padding-left: 20px;
+
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  background-color: #fff;
 `;
