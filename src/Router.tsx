@@ -29,20 +29,20 @@ export function Router() {
         <Route path="/login/naver" element={<NaverLogin />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="*" element={<NotFound />} />
+        <Route
+          path="/detail/:id"
+          element={
+            <>
+              <Detail />
+              <Comment />
+            </>
+          }
+        />
         {token && (
           <>
             <Route path="/newfeed" element={<NewFeed />} />
             <Route path="/newfeedwrite" element={<NewFeedWrite />} />
             <Route path="/users" element={<Users />} />
-            <Route
-              path="/detail/:id"
-              element={
-                <>
-                  <Detail />
-                  <Comment />
-                </>
-              }
-            />
           </>
         )}
       </Routes>
