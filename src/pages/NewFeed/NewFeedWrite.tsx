@@ -37,8 +37,6 @@ export default function NewFeedWirte() {
   const [file, setFile] = useState<File[]>([]);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string[]>([]);
 
-  const [imageUrl, setImageUrl] = useState<string[]>([]);
-
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     console.log(e);
@@ -55,8 +53,6 @@ export default function NewFeedWirte() {
           fileInfo[i] = files;
           setFile([...fileInfo]);
           setImagePreviewUrl([...fileUrls]);
-          console.log(file);
-          console.log(imagePreviewUrl);
         };
         reader.readAsDataURL(files);
       }
@@ -79,7 +75,6 @@ export default function NewFeedWirte() {
 
   const getFormatedToday = () => {
     const today = new Date();
-
     const year = today.getFullYear().toString();
     const month = (today.getMonth() + 1).toString();
     const day = today.getDate().toString();
@@ -87,35 +82,56 @@ export default function NewFeedWirte() {
     const minutes = today.getMinutes().toString();
     const seconds = today.getSeconds().toString();
     const milliseconds = today.getMilliseconds().toString();
-
-    return year + month + day + hours + minutes + seconds + milliseconds;
+    const randomNumber = Math.floor(Math.random() * 100).toString();
+    return (
+      year +
+      month +
+      day +
+      hours +
+      minutes +
+      seconds +
+      milliseconds +
+      randomNumber
+    );
   };
 
-  const getPresignedUrl = async (
-    userName: string
-  ): Promise<{ preSignedUrl: string; fileName: string } | undefined> => {
+  const getPresignedUrl = async (): Promise<
+    { preSignedUrl: any; fileName: string } | undefined
+  > => {
     try {
-      const fileName = `${userName}_${getFormatedToday()}.png`;
-      const response = await axios.post('url', { fileName });
-      return { preSignedUrl: response.data.preSignUrl, fileName };
+      const fileName = `${getFormatedToday()}.png`;
+      const response = await axios.post(
+        'http://192.168.0.248:8000/review/image-presigned-url',
+        { fileName },
+        {
+          headers: {
+            Authorization:
+              'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjYyNTI2ODc2LCJpYXQiOjE2NjI1MTYwNzYsImp0aSI6Ijg0YmM0MjRlZTFmZTQ5ZjE4MzA0OTdlYjhhY2Y5YmJkIiwidXNlcl9pZCI6MX0.JTmPB2lYp3S-fWruax2CRx3DU_o63uLjFcAq3MItsvk',
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      console.log(response);
+      return { preSignedUrl: response.data, fileName };
     } catch (error) {
       console.log(error);
       return;
     }
   };
 
-  const uploadImageToS3 = async (presignedUrl: string, file: File) => {
+  const uploadImageToS3 = async (presignedUrl: any, file: File) => {
     console.log('presigned url is', presignedUrl);
-    const response = await fetch(
-      new Request(presignedUrl, {
-        method: 'PUT',
-        body: file,
-        headers: new Headers({
-          'content-Type': 'image/png',
-        }),
-      })
-    );
-    if (response.status !== 200) {
+    const formData = new FormData();
+    for (const key in presignedUrl.fields) {
+      formData.append(key, presignedUrl.fields[key]);
+    }
+    //formData.append('Content-Type', file.type);
+    formData.append('file', file);
+
+    const response = await axios.post(presignedUrl.url, formData);
+    console.log(response);
+
+    if (response.status !== 204) {
       console.log('error');
       return;
     }
@@ -124,46 +140,69 @@ export default function NewFeedWirte() {
   const write = async () => {
     console.log(file);
 
-    for (let i = 0; i < file.length; i++) {
-      const { preSignedUrl, fileName }: any = await getPresignedUrl('username');
+    const imageUrl = [];
 
+    for (let i = 0; i < file.length; i++) {
+      const { preSignedUrl, fileName }: any = await getPresignedUrl();
       Object.defineProperty(file[i], 'name', {
         writable: true,
         value: fileName,
       });
 
-      uploadImageToS3(preSignedUrl, file[i]);
+      await uploadImageToS3(preSignedUrl, file[i]);
 
-      const prevImageUrl = [...imageUrl];
-      prevImageUrl.push(
-        `https://hola-post-image.s3.ap-northeast-2.amazonaws.com/${fileName}`
-      );
-
-      setImageUrl(prevImageUrl);
+      imageUrl.push({
+        order: i + 1,
+        url: `https://knewnew-review-images.s3.amazonaws.com/${file[i].name}`,
+      });
     }
 
     const jsonData = {
-      score: state.score,
-      foodTag: state.foodTag,
-      store: state.store,
+      reaction: state.score,
+      food_tags: state.foodTag,
+      retailer: state.store,
+      product: inputProduct,
       description: inputValue,
-      productName: inputProduct,
-      image: imageUrl,
+      images: imageUrl,
     };
 
     const formData = new FormData();
     formData.append('data', JSON.stringify(jsonData));
 
-    const response = await axios({
+    await fetch('http://192.168.0.248:8000/review/', {
       method: 'POST',
-      url: 'url',
       headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: '',
+        Authorization:
+          'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjYyNTI2ODc2LCJpYXQiOjE2NjI1MTYwNzYsImp0aSI6Ijg0YmM0MjRlZTFmZTQ5ZjE4MzA0OTdlYjhhY2Y5YmJkIiwidXNlcl9pZCI6MX0.JTmPB2lYp3S-fWruax2CRx3DU_o63uLjFcAq3MItsvk',
+        'Content-Type': 'application/json',
       },
-      data: formData,
-    });
-    console.log(response);
+      body: JSON.stringify(jsonData),
+    }).then(response => console.log(response));
+
+    // const response = await axios.post(
+    //   'http://192.168.0.248:8000/review/',
+    //   { jsonData },
+    //   {
+    //     headers: {
+    //       Authorization:
+    //         'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjYyNTI2ODc2LCJpYXQiOjE2NjI1MTYwNzYsImp0aSI6Ijg0YmM0MjRlZTFmZTQ5ZjE4MzA0OTdlYjhhY2Y5YmJkIiwidXNlcl9pZCI6MX0.JTmPB2lYp3S-fWruax2CRx3DU_o63uLjFcAq3MItsvk',
+    //       'Content-Type': 'application/json',
+    //     },
+    //   }
+    // );
+    // console.log(response);
+
+    // const response = await axios({
+    //   method: 'POST',
+    //   url: 'http://192.168.0.248:8000/review/',
+    //   headers: {
+    //     Authorization:
+    //       'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjYyNTI2ODc2LCJpYXQiOjE2NjI1MTYwNzYsImp0aSI6Ijg0YmM0MjRlZTFmZTQ5ZjE4MzA0OTdlYjhhY2Y5YmJkIiwidXNlcl9pZCI6MX0.JTmPB2lYp3S-fWruax2CRx3DU_o63uLjFcAq3MItsvk',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   data: formData,
+    // });
+    // console.log(response);
   };
 
   const handleInputTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

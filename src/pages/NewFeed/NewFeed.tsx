@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import {
@@ -62,7 +62,7 @@ export default function NewFeed() {
             }}
             checked={score === 1}
           />
-          <IconBox className="iconBox">
+          <IconBox className="iconBox1">
             <FaHeart aria-hidden="true" />
             <span>최고예요</span>
           </IconBox>
@@ -76,7 +76,7 @@ export default function NewFeed() {
             }}
             checked={score === 2}
           />
-          <IconBox className="iconBox">
+          <IconBox className="iconBox2">
             <FaCircle aria-hidden="true" />
             <span>괜찮아요</span>
           </IconBox>
@@ -90,7 +90,7 @@ export default function NewFeed() {
             }}
             checked={score === 3}
           />
-          <IconBox className="iconBox">
+          <IconBox className="iconBox3">
             <FaTimes aria-hidden="true" />
             <span>별로예요</span>
           </IconBox>
@@ -104,7 +104,7 @@ export default function NewFeed() {
             }}
             checked={score === 4}
           />
-          <IconBox className="iconBox">
+          <IconBox className="iconBox4">
             <FaQuestion aria-hidden="true" />
             <span>궁금해요</span>
           </IconBox>
@@ -361,9 +361,21 @@ const ButtonBox = styled.div`
       display: none;
     }
 
-    input[type='checkbox']:checked ~ .iconBox {
+    input[type='checkbox']:checked ~ .iconBox1 {
       color: red;
       border: 1px solid red;
+    }
+    input[type='checkbox']:checked ~ .iconBox2 {
+      color: #f5df4d;
+      border: 1px solid #f5df4d;
+    }
+    input[type='checkbox']:checked ~ .iconBox3 {
+      color: black;
+      border: 1px solid black;
+    }
+    input[type='checkbox']:checked ~ .iconBox4 {
+      color: black;
+      border: 1px solid black;
     }
   }
 `;
