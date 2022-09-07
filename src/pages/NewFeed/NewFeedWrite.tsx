@@ -7,6 +7,10 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { MdPhotoLibrary } from 'react-icons/md';
+import { RootState } from '../../store/store';
+import { useSelector } from 'react-redux';
+
+const BASE_URL = 'http://192.168.0.248:8000';
 
 const settings = {
   dots: false,
@@ -27,9 +31,10 @@ interface RouteState {
 }
 
 export default function NewFeedWirte() {
+  const accessToken = useSelector((state: RootState) => state.tokenState.value);
+
   const navigate = useNavigate();
   const { state } = useLocation() as RouteState;
-  console.log(state);
 
   const [inputValue, setInputValue] = useState('');
   const [inputProduct, setInputProduct] = useState('');
@@ -39,7 +44,6 @@ export default function NewFeedWirte() {
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    console.log(e);
     const fileUrls: string[] = [];
     const fileInfo: File[] = [];
 
@@ -101,26 +105,22 @@ export default function NewFeedWirte() {
     try {
       const fileName = `${getFormatedToday()}.png`;
       const response = await axios.post(
-        'http://192.168.0.248:8000/review/image-presigned-url',
+        `${BASE_URL}/review/image-presigned-url`,
         { fileName },
         {
           headers: {
-            Authorization:
-              'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjYyNTI2ODc2LCJpYXQiOjE2NjI1MTYwNzYsImp0aSI6Ijg0YmM0MjRlZTFmZTQ5ZjE4MzA0OTdlYjhhY2Y5YmJkIiwidXNlcl9pZCI6MX0.JTmPB2lYp3S-fWruax2CRx3DU_o63uLjFcAq3MItsvk',
+            Authorization: `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
           },
         }
       );
-      console.log(response);
       return { preSignedUrl: response.data, fileName };
     } catch (error) {
-      console.log(error);
       return;
     }
   };
 
   const uploadImageToS3 = async (presignedUrl: any, file: File) => {
-    console.log('presigned url is', presignedUrl);
     const formData = new FormData();
     for (const key in presignedUrl.fields) {
       formData.append(key, presignedUrl.fields[key]);
@@ -129,17 +129,13 @@ export default function NewFeedWirte() {
     formData.append('file', file);
 
     const response = await axios.post(presignedUrl.url, formData);
-    console.log(response);
 
     if (response.status !== 204) {
-      console.log('error');
       return;
     }
   };
 
   const write = async () => {
-    console.log(file);
-
     const imageUrl = [];
 
     for (let i = 0; i < file.length; i++) {
@@ -166,43 +162,14 @@ export default function NewFeedWirte() {
       images: imageUrl,
     };
 
-    const formData = new FormData();
-    formData.append('data', JSON.stringify(jsonData));
-
-    await fetch('http://192.168.0.248:8000/review/', {
+    await fetch(`${BASE_URL}/review/`, {
       method: 'POST',
       headers: {
-        Authorization:
-          'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjYyNTI2ODc2LCJpYXQiOjE2NjI1MTYwNzYsImp0aSI6Ijg0YmM0MjRlZTFmZTQ5ZjE4MzA0OTdlYjhhY2Y5YmJkIiwidXNlcl9pZCI6MX0.JTmPB2lYp3S-fWruax2CRx3DU_o63uLjFcAq3MItsvk',
+        Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(jsonData),
-    }).then(response => console.log(response));
-
-    // const response = await axios.post(
-    //   'http://192.168.0.248:8000/review/',
-    //   { jsonData },
-    //   {
-    //     headers: {
-    //       Authorization:
-    //         'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjYyNTI2ODc2LCJpYXQiOjE2NjI1MTYwNzYsImp0aSI6Ijg0YmM0MjRlZTFmZTQ5ZjE4MzA0OTdlYjhhY2Y5YmJkIiwidXNlcl9pZCI6MX0.JTmPB2lYp3S-fWruax2CRx3DU_o63uLjFcAq3MItsvk',
-    //       'Content-Type': 'application/json',
-    //     },
-    //   }
-    // );
-    // console.log(response);
-
-    // const response = await axios({
-    //   method: 'POST',
-    //   url: 'http://192.168.0.248:8000/review/',
-    //   headers: {
-    //     Authorization:
-    //       'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjYyNTI2ODc2LCJpYXQiOjE2NjI1MTYwNzYsImp0aSI6Ijg0YmM0MjRlZTFmZTQ5ZjE4MzA0OTdlYjhhY2Y5YmJkIiwidXNlcl9pZCI6MX0.JTmPB2lYp3S-fWruax2CRx3DU_o63uLjFcAq3MItsvk',
-    //     'Content-Type': 'application/json',
-    //   },
-    //   data: formData,
-    // });
-    // console.log(response);
+    });
   };
 
   const handleInputTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -215,7 +182,6 @@ export default function NewFeedWirte() {
 
   const handleInputProductChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputProduct(e.target.value);
-    console.log(inputProduct);
   };
 
   useEffect(() => {
