@@ -6,6 +6,8 @@ import { useInfiniteQuery } from 'react-query';
 import { useInView } from 'react-intersection-observer';
 import { getFeed } from '../../api';
 import { GetFeedQueryType } from '../../types/feed';
+import Loading from '../../components/Status/Loading';
+import Error from '../../components/Status/Error';
 
 const BASE_URL = 'http://192.168.0.248:8000';
 
@@ -33,8 +35,8 @@ function ItemList() {
       fetchNextPage();
   }, [inView]);
 
-  if (status === 'loading') return <p>Loading..</p>;
-  if (status === 'error') return <p>error..</p>;
+  if (status === 'loading') return <Loading />;
+  if (status === 'error') return <Error />;
 
   const content = data?.pages.map(pg => {
     return pg.posts.results.map((item: GetFeedQueryType) => {
@@ -47,7 +49,7 @@ function ItemList() {
       <ListWrap>
         <List>
           {content}
-          {isFetchingNextPage ? <span>loading...</span> : <Ref ref={ref}></Ref>}
+          {isFetchingNextPage ? <Loading /> : <Ref ref={ref}></Ref>}
         </List>
       </ListWrap>
     </ItemListWrap>
