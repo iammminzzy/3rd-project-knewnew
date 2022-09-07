@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { IoIosArrowBack, AiOutlineSetting } from '../../utils/common/icons';
+import { useDispatch } from 'react-redux';
+import { removeToken } from '../../reducer/userSlice';
 
 interface Iprops {
   userLocation: string;
@@ -9,6 +11,7 @@ interface Iprops {
 
 const EtcNav = ({ userLocation }: Iprops) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const title = () => {
     if (userLocation.includes('/newfeed')) {
       return '글쓰기';
@@ -21,12 +24,20 @@ const EtcNav = ({ userLocation }: Iprops) => {
     }
   };
 
+  const handleLogout = () => {
+    if (confirm('로그아웃 하시겠습니까?')) {
+      dispatch(removeToken());
+      navigate('/signin');
+    }
+    return;
+  };
+
   return (
     <Container>
       <Content>
         <Arrow onClick={() => navigate(-1)} />
         <Title>{title()}</Title>
-        {userLocation.includes('/users') && <Setting />}
+        {userLocation.includes('/users') && <Setting onClick={handleLogout} />}
       </Content>
     </Container>
   );
@@ -71,4 +82,5 @@ const Setting = styled(AiOutlineSetting)`
   position: absolute;
   right: 5%;
   font-size: 20px;
+  cursor: pointer;
 `;

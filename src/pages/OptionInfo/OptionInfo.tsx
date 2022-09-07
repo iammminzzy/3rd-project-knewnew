@@ -55,8 +55,8 @@ export default function OptionInfo({ userInfo }: { userInfo: UserInfoProps }) {
 
   const { isLoading, isError, mutate } = useMutation(setOptionInfo, {
     onSuccess: () => {
-      alert('뉴뉴에 오신 것을 환영합니다 (>_<)/');
       navigate('/');
+      alert('뉴뉴에 오신 것을 환영합니다 (>_<)/');
     },
     retry: false,
   });

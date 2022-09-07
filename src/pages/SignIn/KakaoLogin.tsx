@@ -89,8 +89,8 @@ export default function KakaoLogin() {
   if (isNew === true) {
     return <OptionInfo userInfo={kakaoUserInfo?.data} />;
   } else if (isNew === false) {
-    alert('뉴뉴에 오신 것을 환영합니다 (>_<)/');
     navigate('/');
+    alert('뉴뉴에 오신 것을 환영합니다 (>_<)/');
   } else {
     alert('다시 시도해 주세요');
     navigate('/signin');
