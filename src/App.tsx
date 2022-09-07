@@ -19,12 +19,10 @@ import 'slick-carousel/slick/slick-theme.css';
 import { BASE_URL } from './api/utils';
 
 function App() {
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const closeModal = (): void => {
-    setModalOpen(false);
-  };
+
   // * react query 글로벌 에러 핸들링 세팅
   const queryClient = new QueryClient({
     queryCache: new QueryCache({

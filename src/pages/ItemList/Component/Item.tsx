@@ -343,7 +343,6 @@ const ImgWrap = styled.div<{ isMorePicture: number }>`
           width: 100%;
           height: 100%;
           background-color: rgba(0, 0, 0, 0.75);
-          z-index: 2;
           text-align: center;
 
           svg {
