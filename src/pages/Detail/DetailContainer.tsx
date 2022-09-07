@@ -1,4 +1,5 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { getDetail } from '../../api/fetchDetail';
 import { DetailType } from '../../types/detail';
@@ -7,7 +8,10 @@ import Loader from '../../components/Loader/Loader';
 import DetailPresenter from './DetailPresenter';
 
 const DetailContainer = () => {
-  const { isLoading, data } = useQuery<DetailType>('getDetail', getDetail);
+  const { id } = useParams();
+  const { isLoading, data } = useQuery<DetailType>(['getDetail', id], () =>
+    getDetail(id)
+  );
 
   if (isLoading || !data) {
     return <Loader />;
