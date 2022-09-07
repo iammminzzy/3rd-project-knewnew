@@ -1,6 +1,6 @@
-# 뉴뉴 (Knewnew) :: PC버전 🍭
+# 뉴뉴 (Knewnew)::PC버전 🍭
 
-<img src="https://user-images.githubusercontent.com/104430030/184290180-66c96950-1e42-461e-b413-1c74f05ce4c4.jpeg" alt="teamS2" width="500px" />
+<img src="https://user-images.githubusercontent.com/104430030/188837571-d895300c-0e2b-4cb9-907d-015b96852369.JPG" alt="teamKnewnew" width="500px" />
 
 ## 개발 인원 및 기간
 
@@ -30,14 +30,15 @@
 ### Back-end<br>
 <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=Python&logoColor=white"/>&nbsp;
 <img src="https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=Django&logoColor=white"/>&nbsp;
-<img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white"/>&nbsp;
-<img src="https://img.shields.io/badge/Amazon AWS-232F3E?style=for-the-badge&logo=AmazonAWS&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/Amazon S3-569A31?style=for-the-badge&logo=AmazonS3&logoColor=white">
+<img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=MySQL&logoColor=white"/>&nbsp;
 
 ## 협업 툴
+<img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=MySQL&logoColor=white"/>&nbsp;
 <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=Slack&logoColor=white"/>&nbsp;
 <img src="https://img.shields.io/badge/Trello-0052CC?style=for-the-badge&logo=Trello&logoColor=white"/>&nbsp;
 <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white"/>&nbsp;
 <img src="https://img.shields.io/badge/Github-181717?style=for-the-badge&logo=Github&logoColor=white"/>&nbsp;
+
 
 ## 구현 
 
@@ -76,7 +77,7 @@
 - Nav / Footer
 - 잘못된 접근 시 활용 가능한 404 페이지
 
-## 시연영상
+## 시연 영상
 
 [🍭뉴뉴 (Knewnew)](http://www.youtube.com/)
 
