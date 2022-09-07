@@ -4,7 +4,7 @@ const baseURL = 'dev.knewnnew.com/';
 
 interface GetProfileType {
   token: string;
-  id: number;
+  id?: number;
 }
 
 export const getProfile = async ({ token, id }: GetProfileType) => {

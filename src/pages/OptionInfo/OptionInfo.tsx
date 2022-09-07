@@ -1,71 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useMutation } from 'react-query';
 import axios from 'axios';
-import { useQuery } from 'react-query';
-import { useSearchParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { Header, ToBack } from '../Detail/Detail';
+import Loading from '../../components/Status/Loading';
+import Error from '../../components/Status/Error';
+import { UserInfoProps } from '../../types/login/index';
+import { OptionProps } from '../../types/optionInfo/index';
+import { BASE_URL } from '../../api/utils';
 import { IoIosArrowBack } from 'react-icons/io';
 import { AiOutlineCheck } from 'react-icons/ai';
 
-export default function OptionInfo() {
+export default function OptionInfo({ userInfo }: { userInfo: UserInfoProps }) {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const [isToken, setIsToken] = useState<boolean>(false);
-  const [inputValue, setInputValue] = useState<object>({});
-  const isDisabled = Object.keys(inputValue).length === 3;
-
-  /* Kakao Login */
-  const AUTHORIZE_CODE = searchParams.get('code');
-  const kakaoTokenLink = `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.REACT_APP_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_REDIRECT_URI}&code=${AUTHORIZE_CODE}`;
-
-  //토큰 받기(from Kakao)
-  const getKakaoToken = async () => {
-    return await axios.post(kakaoTokenLink, {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    });
-  };
-
-  const {
-    data: kakaoToken,
-    isLoading: kakaoTokenIsLoding,
-    isError: kakaoTokenIsError,
-  } = useQuery('getKakaoToken', getKakaoToken, {
-    onSuccess: kakao => {
-      localStorage.setItem('kakaoToken', kakao.data.access_token);
-      setIsToken(!isToken);
-    },
-  });
-
-  //사용자 정보 받기(from BackEnd)
-  const getUserInfo = async () => {
-    // return await axios.post('/data/optionInfo.json', {
-    //   kakaoToken: localStorage.getItem('kakaoToken'),
-    // });
-    return await axios.get('/data/optionInfo.json');
-  };
-
-  const {
-    data: kakaoUserInfo,
-    isLoading: kakaoUserInfoIsLoding,
-    isError: kakaoUserInfoIsError,
-  } = useQuery('getUserInfo', getUserInfo, {
-    enabled: !!kakaoToken,
-  });
-
-  useEffect(() => {
-    getKakaoToken();
-    getUserInfo();
-  }, []);
-
-  if (kakaoTokenIsLoding || kakaoUserInfoIsLoding) {
-    return <Status>Loading. . .</Status>;
-  }
-  if (kakaoTokenIsError || kakaoUserInfoIsError) {
-    return <Status>Error ⚠️</Status>;
-  }
+  const [enabled, setEnabled] = useState(false);
+  const [etcValue, setEtcValue] = useState<string>('');
+  const [inputValue, setInputValue] = useState<OptionProps>({});
+  const isDisabled = Object.keys(inputValue).length !== OPTION_DATA.length;
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, name } = e.target;
+    const { name, value } = e.target;
 
     setInputValue({
       ...inputValue,
@@ -73,13 +27,46 @@ export default function OptionInfo() {
     });
   };
 
-  const handleSubmit = () => {
-    axios.post(`api`, inputValue).then(res => console.log(res));
-    alert('뉴뉴에 오신 것을 환영합니다 (>_<)/');
-    navigate('/');
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (inputValue.occupation == '') {
+      alert('직업을 입력해 주세요!');
+      return;
+    }
+
+    mutate();
   };
 
-  console.log(inputValue);
+  const setOptionInfo = () => {
+    return axios.post(
+      `${BASE_URL}/user/introduction`,
+      {
+        introduction_tags: [
+          inputValue.style,
+          inputValue.family,
+          inputValue.occupation,
+        ],
+      },
+      {
+        headers: { Authorization: `Bearer ${userInfo.access_token}` },
+      }
+    );
+  };
+
+  const { isLoading, isError, mutate } = useMutation(setOptionInfo, {
+    onSuccess: () => {
+      alert('뉴뉴에 오신 것을 환영합니다 (>_<)/');
+      navigate('/');
+    },
+    retry: false,
+  });
+
+  if (isLoading) {
+    return <Loading />;
+  }
+  if (isError) {
+    return <Error />;
+  }
 
   return (
     <Container>
@@ -90,8 +77,7 @@ export default function OptionInfo() {
       </NoBorderHeader>
       <OptionInfoWrap>
         <Greeting>
-          <User>{kakaoUserInfo?.data.user}</User>님 반가워요!
-          {/* <User>minjee801#9518</User>님 반가워요! */}
+          <User>{userInfo.nickname}</User>님 반가워요!
         </Greeting>
         <Bold>슬기로운 뉴뉴생활을 위해 나를 소개해주세요.</Bold>
         <Description>
@@ -110,13 +96,47 @@ export default function OptionInfo() {
                     {option.map((choice, idx) => {
                       return (
                         <RadioInputWrap key={idx}>
-                          <RadioInput
-                            type="radio"
-                            name={name}
-                            value={choice}
-                            onChange={handleInput}
-                          />
-                          <label>{choice}</label>
+                          {choice !== '기타' ? (
+                            <>
+                              <RadioInput
+                                type="radio"
+                                name={name}
+                                value={choice}
+                                onChange={handleInput}
+                                onFocus={() => setEnabled(false)}
+                              />
+                              <label>{choice}</label>
+                            </>
+                          ) : (
+                            <>
+                              <RadioInput
+                                type="radio"
+                                name="occupation"
+                                onFocus={() => {
+                                  setEnabled(true);
+                                  setInputValue({
+                                    ...inputValue,
+                                    occupation: etcValue,
+                                  });
+                                }}
+                              />
+                              <label>기타</label>
+                              <EtcInput
+                                type="text"
+                                name="occupation"
+                                value={etcValue}
+                                placeholder="직접 입력해주세요"
+                                onChange={e => {
+                                  setEtcValue(e.target.value);
+                                  setInputValue({
+                                    ...inputValue,
+                                    occupation: e.target.value,
+                                  });
+                                }}
+                                disabled={!enabled}
+                              />
+                            </>
+                          )}
                         </RadioInputWrap>
                       );
                     })}
@@ -131,7 +151,7 @@ export default function OptionInfo() {
               </OptionBox>
             );
           })}
-          <NextButton disabled={!isDisabled}>다음으로</NextButton>
+          <NextButton disabled={isDisabled}>다음으로</NextButton>
         </OptionForm>
       </OptionInfoWrap>
     </Container>
@@ -174,16 +194,49 @@ const Container = styled.div`
   }
 `;
 
-const NoBorderHeader = styled(Header)`
-  border-bottom: 1px solid transparent;
-`;
-
-const Status = styled.div`
-  height: 100vh;
+export const Header = styled.div`
+  position: fixed;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 70px;
+  width: 100%;
+  padding: 34px 0;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  font-size: 20px;
+  z-index: 10;
+
+  svg {
+    font-size: 30px;
+  }
+
+  @media (min-width: 768px) {
+    width: 748px;
+  }
+
+  @media (max-width: 767px) {
+    left: 10px;
+    right: 10px;
+    padding: 29px 0;
+    font-size: 16px;
+
+    svg {
+      font-size: 20px;
+    }
+  }
+`;
+
+export const ToBack = styled.div`
+  position: absolute;
+  left: 5px;
+
+  svg:hover {
+    cursor: pointer;
+  }
+`;
+
+const NoBorderHeader = styled(Header)`
+  border-bottom: 1px solid transparent;
 `;
 
 const OptionInfoWrap = styled.div`
@@ -255,7 +308,7 @@ const RadioInputWrap = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  height: 20px;
+  padding: 1px 0;
 `;
 
 const RadioInput = styled.input`
@@ -263,6 +316,13 @@ const RadioInput = styled.input`
   height: 15px;
   accent-color: ${({ theme }) => theme.colors.red};
   cursor: pointer;
+`;
+
+const EtcInput = styled.input`
+  height: 100%;
+  padding-top: 1px;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.white50};
+  font-size: 15px;
 `;
 
 const Complete = styled.div`
