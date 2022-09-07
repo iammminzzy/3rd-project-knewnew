@@ -7,6 +7,10 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { MdPhotoLibrary } from 'react-icons/md';
+import { RootState } from '../../store/store';
+import { useSelector } from 'react-redux';
+
+const BASE_URL = 'http://192.168.0.248:8000';
 
 const settings = {
   dots: false,
@@ -27,9 +31,10 @@ interface RouteState {
 }
 
 export default function NewFeedWirte() {
+  const accessToken = useSelector((state: RootState) => state.tokenState.value);
+
   const navigate = useNavigate();
   const { state } = useLocation() as RouteState;
-  console.log(state);
 
   const [inputValue, setInputValue] = useState('');
   const [inputProduct, setInputProduct] = useState('');
@@ -37,11 +42,8 @@ export default function NewFeedWirte() {
   const [file, setFile] = useState<File[]>([]);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string[]>([]);
 
-  const [imageUrl, setImageUrl] = useState<string[]>([]);
-
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    console.log(e);
     const fileUrls: string[] = [];
     const fileInfo: File[] = [];
 
@@ -55,8 +57,6 @@ export default function NewFeedWirte() {
           fileInfo[i] = files;
           setFile([...fileInfo]);
           setImagePreviewUrl([...fileUrls]);
-          console.log(file);
-          console.log(imagePreviewUrl);
         };
         reader.readAsDataURL(files);
       }
@@ -79,7 +79,6 @@ export default function NewFeedWirte() {
 
   const getFormatedToday = () => {
     const today = new Date();
-
     const year = today.getFullYear().toString();
     const month = (today.getMonth() + 1).toString();
     const day = today.getDate().toString();
@@ -87,83 +86,90 @@ export default function NewFeedWirte() {
     const minutes = today.getMinutes().toString();
     const seconds = today.getSeconds().toString();
     const milliseconds = today.getMilliseconds().toString();
-
-    return year + month + day + hours + minutes + seconds + milliseconds;
+    const randomNumber = Math.floor(Math.random() * 100).toString();
+    return (
+      year +
+      month +
+      day +
+      hours +
+      minutes +
+      seconds +
+      milliseconds +
+      randomNumber
+    );
   };
 
-  const getPresignedUrl = async (
-    userName: string
-  ): Promise<{ preSignedUrl: string; fileName: string } | undefined> => {
+  const getPresignedUrl = async (): Promise<
+    { preSignedUrl: any; fileName: string } | undefined
+  > => {
     try {
-      const fileName = `${userName}_${getFormatedToday()}.png`;
-      const response = await axios.post('url', { fileName });
-      return { preSignedUrl: response.data.preSignUrl, fileName };
+      const fileName = `${getFormatedToday()}.png`;
+      const response = await axios.post(
+        `${BASE_URL}/review/image-presigned-url`,
+        { fileName },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      return { preSignedUrl: response.data, fileName };
     } catch (error) {
-      console.log(error);
       return;
     }
   };
 
-  const uploadImageToS3 = async (presignedUrl: string, file: File) => {
-    console.log('presigned url is', presignedUrl);
-    const response = await fetch(
-      new Request(presignedUrl, {
-        method: 'PUT',
-        body: file,
-        headers: new Headers({
-          'content-Type': 'image/png',
-        }),
-      })
-    );
-    if (response.status !== 200) {
-      console.log('error');
+  const uploadImageToS3 = async (presignedUrl: any, file: File) => {
+    const formData = new FormData();
+    for (const key in presignedUrl.fields) {
+      formData.append(key, presignedUrl.fields[key]);
+    }
+    //formData.append('Content-Type', file.type);
+    formData.append('file', file);
+
+    const response = await axios.post(presignedUrl.url, formData);
+
+    if (response.status !== 204) {
       return;
     }
   };
 
   const write = async () => {
-    console.log(file);
+    const imageUrl = [];
 
     for (let i = 0; i < file.length; i++) {
-      const { preSignedUrl, fileName }: any = await getPresignedUrl('username');
-
+      const { preSignedUrl, fileName }: any = await getPresignedUrl();
       Object.defineProperty(file[i], 'name', {
         writable: true,
         value: fileName,
       });
 
-      uploadImageToS3(preSignedUrl, file[i]);
+      await uploadImageToS3(preSignedUrl, file[i]);
 
-      const prevImageUrl = [...imageUrl];
-      prevImageUrl.push(
-        `https://hola-post-image.s3.ap-northeast-2.amazonaws.com/${fileName}`
-      );
-
-      setImageUrl(prevImageUrl);
+      imageUrl.push({
+        order: i + 1,
+        url: `https://knewnew-review-images.s3.amazonaws.com/${file[i].name}`,
+      });
     }
 
     const jsonData = {
-      score: state.score,
-      foodTag: state.foodTag,
-      store: state.store,
+      reaction: state.score,
+      food_tags: state.foodTag,
+      retailer: state.store,
+      product: inputProduct,
       description: inputValue,
-      productName: inputProduct,
-      image: imageUrl,
+      images: imageUrl,
     };
 
-    const formData = new FormData();
-    formData.append('data', JSON.stringify(jsonData));
-
-    const response = await axios({
+    await fetch(`${BASE_URL}/review/`, {
       method: 'POST',
-      url: 'url',
       headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: '',
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
       },
-      data: formData,
+      body: JSON.stringify(jsonData),
     });
-    console.log(response);
   };
 
   const handleInputTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -176,7 +182,6 @@ export default function NewFeedWirte() {
 
   const handleInputProductChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputProduct(e.target.value);
-    console.log(inputProduct);
   };
 
   useEffect(() => {
