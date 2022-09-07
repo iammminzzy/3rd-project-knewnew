@@ -9,8 +9,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import { MdPhotoLibrary } from 'react-icons/md';
 import { RootState } from '../../store/store';
 import { useSelector } from 'react-redux';
-
-const BASE_URL = 'http://192.168.0.248:8000';
+import { BASE_URL } from '../../api/utils';
 
 const settings = {
   dots: false,
@@ -170,6 +169,7 @@ export default function NewFeedWirte() {
       },
       body: JSON.stringify(jsonData),
     });
+    navigate('/feedlist');
   };
 
   const handleInputTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

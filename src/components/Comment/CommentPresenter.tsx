@@ -28,54 +28,55 @@ const CommentPresenter = ({
       <CommentWrap>
         <CommentTotal>작성된 댓글 개</CommentTotal>
         <CommentList>
-          {data.map(comment => (
-            <div key={comment.id + comment.created_at}>
-              <CommentWapper>
-                <ProfileImg src={comment.user.profile_image} alt="" />
-                <ProfileInfo>
-                  <ProfileBox>
-                    <Nickname>{comment.user.nickname}</Nickname>
-                    <div>{getDate(comment.created_at)}</div>
-                  </ProfileBox>
-                  <Comment>{comment.description}</Comment>
-                  <CommentButton>
-                    <ReComment
-                      onClick={() =>
-                        handleReComment(comment.user.nickname, comment.id)
-                      }
-                    >
-                      답글달기
-                    </ReComment>
-                    <LikeButton>좋아요</LikeButton>
-                  </CommentButton>
-                </ProfileInfo>
-              </CommentWapper>
-              {comment.child_comments.map(reComment => (
-                <div key={reComment.id + reComment.created_at}>
-                  <ReCommentWapper>
-                    <ProfileImg src={reComment.user.profile_image} alt="" />
-                    <ProfileInfo>
-                      <ProfileBox>
-                        <Nickname>{reComment.user.nickname}</Nickname>
-                        <div>{getDate(reComment.created_at)}</div>
-                      </ProfileBox>
-                      <Comment>
-                        <span>@{comment.user.nickname} </span>
-                        {reComment.description}
-                      </Comment>
-                      <CommentButton>
-                        <LikeButton>좋아요</LikeButton>
-                      </CommentButton>
-                    </ProfileInfo>
-                  </ReCommentWapper>
-                </div>
-              ))}
-            </div>
-          ))}
+          {data &&
+            data.map(comment => (
+              <div key={comment.id + comment.created_at}>
+                <CommentWapper>
+                  <ProfileImg src={comment.user.profile_image} alt="" />
+                  <ProfileInfo>
+                    <ProfileBox>
+                      <Nickname>{comment.user.nickname}</Nickname>
+                      <div>{getDate(comment.created_at)}</div>
+                    </ProfileBox>
+                    <Comment>{comment.description}</Comment>
+                    <CommentButton>
+                      <ReComment
+                        onClick={() =>
+                          handleReComment(comment.user.nickname, comment.id)
+                        }
+                      >
+                        답글달기
+                      </ReComment>
+                      <LikeButton>좋아요</LikeButton>
+                    </CommentButton>
+                  </ProfileInfo>
+                </CommentWapper>
+                {comment.child_comments.map(reComment => (
+                  <div key={reComment.id + reComment.created_at}>
+                    <ReCommentWapper>
+                      <ProfileImg src={reComment.user.profile_image} alt="" />
+                      <ProfileInfo>
+                        <ProfileBox>
+                          <Nickname>{reComment.user.nickname}</Nickname>
+                          <div>{getDate(reComment.created_at)}</div>
+                        </ProfileBox>
+                        <Comment>
+                          <span>@{comment.user.nickname} </span>
+                          {reComment.description}
+                        </Comment>
+                        <CommentButton>
+                          <LikeButton>좋아요</LikeButton>
+                        </CommentButton>
+                      </ProfileInfo>
+                    </ReCommentWapper>
+                  </div>
+                ))}
+              </div>
+            ))}
         </CommentList>
       </CommentWrap>
       <CommentInputWrap>
-        {reComment.ninkname.length > 0 && (
+        {data && reComment.ninkname.length > 0 && (
           <ReCommentBox>
             <ReCommentText>
               {reComment.ninkname}님에게 답글을 남기는 중

@@ -5,11 +5,18 @@ import { getComment } from '../../api/fetchComment';
 import { postComment } from '../../api/fetchComment';
 import { CommentType } from '../../types/comment';
 
+import { RootState } from '../../store/store';
+import { useSelector } from 'react-redux';
+
 import CommentPresenter from './CommentPresenter';
 import Loading from '../Status/Loading';
+import Error from '../Status/Error';
 
 const Comments = () => {
   const { id } = useParams();
+  const ACCESS_TOKEN = useSelector(
+    (state: RootState) => state.tokenState.value
+  );
   const [comments, setComments] = useState<CommentType[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
   const [reComment, setReComment] = useState({
@@ -29,7 +36,9 @@ const Comments = () => {
   };
   const handleAddComment = (event: React.FormEvent<HTMLFormElement>) => {
     const update = async () => {
-      setComments(await postComment(id, reComment.id, inputValue));
+      setComments(
+        await postComment(ACCESS_TOKEN, id, reComment.id, inputValue)
+      );
     };
     event.preventDefault();
     if (reComment.ninkname.length > 0) {
@@ -50,7 +59,7 @@ const Comments = () => {
     });
   };
 
-  const { isLoading } = useQuery<CommentType[]>(
+  const { isLoading, isError } = useQuery<CommentType[]>(
     ['getComment', id],
     () => getComment(id),
     {
@@ -62,6 +71,10 @@ const Comments = () => {
 
   if (isLoading) {
     return <Loading />;
+  }
+
+  if (isError) {
+    return <Error />;
   }
 
   return (
