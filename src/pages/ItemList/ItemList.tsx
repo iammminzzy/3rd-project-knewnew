@@ -7,10 +7,10 @@ import { useInView } from 'react-intersection-observer';
 import { getFeed } from '../../api';
 import { GetFeedQueryType } from '../../types/feed';
 
+const BASE_URL = 'http://192.168.0.248:8000';
+
 const fetchPostList = async (pageParam: number) => {
-  const res = await axios.get(
-    `http://192.168.0.248:8000/review/?page=${pageParam}`
-  );
+  const res = await axios.get(`${BASE_URL}/review/?page=${pageParam}`);
   const posts = res.data;
   return { posts, nextPage: pageParam + 1 };
 };
