@@ -23,11 +23,11 @@ export function Router() {
     <>
       <Nav />
       <Routes>
-        <Route path="/" element={<Navigate to="/feedlist" />} />
-        <Route path="/feedlist" element={<ItemList />} />
-        <Route path="/login/kakao" element={<KakaoLogin />} />
-        <Route path="/login/naver" element={<NaverLogin />} />
-        <Route path="/signin" element={<SignIn />} />
+        <Route path="" element={<Navigate to="/feedlist" />} />
+        <Route path="feedlist" element={<ItemList />} />
+        <Route path="login/kakao" element={<KakaoLogin />} />
+        <Route path="login/naver" element={<NaverLogin />} />
+        <Route path="signin" element={<SignIn />} />
         <Route path="*" element={<NotFound />} />
         <Route
           path="/detail/:id"
