@@ -42,72 +42,56 @@
 <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white"/>&nbsp;
 <img src="https://img.shields.io/badge/Github-181717?style=for-the-badge&logo=Github&logoColor=white"/>&nbsp;
 
-## 구현
+## 시연 영상 및 구현 사항
 
-### Sign in : 로그인 페이지
+[🍭뉴뉴 (Knewnew)](https://youtu.be/T7NdgYqNdog)
 
-- 소셜 로그인
-  - 카카오
-  - 네이버
-
-### Option Info : 추가 정보 페이지
-
-- 로그인 이후 추가 정보 수집 후 저장
-
-### My : 마이 페이지
-
-- 로그인한 사용자의 정보 조회
-- 로그아웃
-
-### Main(=List) : 리스트 페이지
+### 메인(=리스트) 페이지
 
 - 게시글 리스트 조회
 - 무한스크롤
+- 비로그인 사용자도 조회는 가능하나 수정, 삭제 등의 조작은 로그인 사용자만 가능하도록 구현<br>
+  ![2022-09-07_19:24:36_video](https://user-images.githubusercontent.com/104430030/190970982-369e5461-dcb8-4c0f-b61d-a562f2c810d7.GIF)<br><br>
 
-### Posting : 글쓰기 페이지
+### 소셜 로그인
 
-- Form data를 이용한 입력 데이터 전송
-- S3 - pre signed URL을 이용한 이미지 파일 업로드
+- Kakao / Naver OAuth 2.0 API를 이용한 소셜 로그인 기능 구현
+- JWT를 이용한 인증과 Refresh Token을 이용한 토큰 보안 강화
+- Token의 상태 관리를 하기 위해 Redux 활용<br>
+  ![2022-09-07_19:24:36_video 2](https://user-images.githubusercontent.com/104430030/190971257-782fa279-ba3c-42f8-a119-0b9951913970.GIF)<br>
+  ![2022-09-07_19:24:36_video 5](https://user-images.githubusercontent.com/104430030/190971401-a7cbbcc3-1620-419e-bd65-66cec3c24794.GIF)<br><br>
 
-### Detail : 상세 페이지
+### 추가 정보 입력 페이지
 
-- 게시글
-  - 조회 GET
-  - 삭제 DELETE
-- 댓글
-  - 조회 GET
-  - 생성 POST
-  - 수정 PATCH
-  - 삭제 DELETE
+- 회원가입 이후 추가 정보 수집 후 저장
+- 최초 회원가입 시 1회만 수집되며, 이후 로그인 시에는 생략되고 바로 메인 페이지로 이동<br>
+  ![2022-09-07_19:24:36_video 3](https://user-images.githubusercontent.com/104430030/190971313-ed11f89b-bc13-46e1-a8f0-e21294439dc8.GIF)<br><br>
+
+### 글쓰기 페이지
+
+- Form Data를 활용한 게시글 전송 기능 구현
+- S3와 pre signed URL을 이용한 이미지 파일 업로드 기능 구현<br>
+  ![2022-09-07_19:24:36_video 9](https://user-images.githubusercontent.com/104430030/190971685-772079d8-b102-4a1a-b5d6-4844a1388604.GIF)<br>
+  ![2022-09-07_19:24:36_video 10](https://user-images.githubusercontent.com/104430030/190971700-cf86b8ef-0666-4756-b8e3-0ac9021c95c5.GIF)<br><br>
+
+### 게시글 상세 페이지
+
+- 게시글 조회, 삭제 기능 구현
+- 이미지 슬라이더 구현
+- 댓글 및 대댓글의 생성, 삭제 기능 구현<br>
+  ![2022-09-07_19:24:36_video 6](https://user-images.githubusercontent.com/104430030/190971502-4727eb38-b64b-4850-85ea-6a02bef45a4b.GIF)<br>
+  ![2022-09-07_19:24:36_video 12](https://user-images.githubusercontent.com/104430030/190972449-7c2533eb-5a5a-477e-8d05-d169cb266c82.GIF)<br>
+  ![2022-09-07_19:24:36_video 7](https://user-images.githubusercontent.com/104430030/190971558-a9cb0f16-66ad-41a4-9e46-ec6722d63233.GIF)<br>
+  ![2022-09-07_19:24:36_video 8](https://user-images.githubusercontent.com/104430030/190971570-c9b9ed94-4b37-4d55-a509-37e1de434da2.GIF)<br><br>
+
+### 마이 페이지
+
+- 로그인한 사용자의 정보 조회
+- 로그아웃<br>
+  ![2022-09-07_19:24:36_video 11](https://user-images.githubusercontent.com/104430030/190972313-31802e27-3068-4056-8182-ec9c47eb6d93.GIF)<br><br>
 
 ### 기타 페이지
 
 - 모바일 앱 연계 모달창
 - Nav / Footer
 - 잘못된 접근 시 활용 가능한 404 페이지
-
-## 시연 영상
-
-[🍭뉴뉴 (Knewnew)](https://youtu.be/T7NdgYqNdog)
-
-### 메인(=리스트) 페이지
-
-- 비로그인 사용자도 조회는 가능하나 수정, 삭제 등의 조작은 로그인 사용자만 가능하도록 구현
-
-### 소셜 로그인 및 로그아웃
-
-- Kakao / Naver OAuth 2.0 API를 이용한 소셜 로그인 기능 구현
-- JWT를 이용한 인증
-- Refresh Token을 이용한 토큰 보안 강화
-- 전역에서 Token의 상태 관리를 하기 위해 Redux 활용
-- 로그아웃 기능 구현
-
-### 글쓰기 페이지
-
-- Form Data를 활용한 게시글 전송 기능 구현
-- S3와 pre signed URL을 이용한 이미지 파일 업로드 기능 구현
-
-### 게시글 상세 페이지
-
-- 게시글 조회, 삭제 기능 구현
-- 댓글 및 대댓글의 생성, 삭제 기능 구현
